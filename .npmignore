@@ -1,0 +1,6 @@
+*.tgz
+__tests__
+test-samples
+tsconfig.json
+jsconfig.json
+_example*
