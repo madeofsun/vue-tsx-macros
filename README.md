@@ -228,5 +228,3 @@ export const Example = component$().define((_, context) =>
   expose({}, () => <div>{counter.value}</div>)
 );
 ```
-
-Copyright (c) 2013-2016, madeofsun (https://github.com/madeofsun)
