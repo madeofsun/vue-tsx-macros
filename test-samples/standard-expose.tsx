@@ -1,4 +1,4 @@
-import { $component } from "vue-tsx-macros";
+import { component$ } from "vue-tsx-macros";
 import { ref } from "vue";
 
 export interface ExampleProps {
@@ -7,7 +7,7 @@ export interface ExampleProps {
   array?: string[];
 }
 
-export const Example1 = $component<ExampleProps>().define(
+export const Example1 = component$<ExampleProps>().define(
   (props, { expose }) => {
     const list = ref(props.array);
 
@@ -19,21 +19,21 @@ const instance = null as unknown as InstanceType<typeof Example1>;
 
 console.log(instance.list?.[0]?.trim());
 
-export const Example2 = $component<ExampleProps>().define(
+export const Example2 = component$<ExampleProps>().define(
   (props, { expose }) => {
     const list = ref(props.array);
     return expose({ list }, () => <div>{props.counter}</div>);
   }
 );
 
-export const Example3 = $component<ExampleProps>().define(
+export const Example3 = component$<ExampleProps>().define(
   (props, { expose }) => {
     const list = ref(props.array);
     return expose({ list });
   }
 );
 
-export const Example4 = $component<ExampleProps>().define((props, context) => {
+export const Example4 = component$<ExampleProps>().define((props, context) => {
   const list = ref(props.array);
   return context.expose({ list });
 });

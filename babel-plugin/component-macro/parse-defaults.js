@@ -5,9 +5,7 @@ const t = babel.types;
 
 /**
  * @param {babel.NodePath<babel.types.CallExpression>} path
- * @returns {null
- * | babel.NodePath<babel.types.Identifier>
- * | babel.NodePath<babel.types.ObjectExpression>}
+ * @returns {null | babel.types.Identifier | babel.types.ObjectExpression}
  */
 module.exports = function parseDefaults(path) {
   if (!t.isMemberExpression(path.parentPath.node)) {
@@ -25,28 +23,8 @@ module.exports = function parseDefaults(path) {
   ) {
     const callExpression = path.parentPath.parentPath.node;
     const arg = callExpression.arguments[0];
-    if (arg && (t.isIdentifier(arg) || t.isObjectExpression(arg))) {
-      /** @type {undefined | babel.NodePath<babel.types.Identifier> | babel.NodePath<babel.types.ObjectExpression>}} */
-      let defaultsPath;
-
-      path.parentPath.parentPath.traverse({
-        Identifier(path) {
-          if (path.node === arg) {
-            defaultsPath = path;
-            path.stop();
-          }
-        },
-        ObjectExpression(path) {
-          if (path.node === arg) {
-            defaultsPath = path;
-            path.stop();
-          }
-        },
-      });
-
-      if (defaultsPath) {
-        return defaultsPath;
-      }
+    if (t.isIdentifier(arg) || t.isObjectExpression(arg)) {
+      return arg;
     }
   }
   return null;

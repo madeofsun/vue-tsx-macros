@@ -11,7 +11,7 @@ const t = babel.types;
  * @param {babel.NodePath<babel.types.CallExpression>} path
  * @returns {null | {
  *  type: typeof STANDARD_COMPONENT | typeof FUNCTIONAL_COMPONENT,
- *  path: undefined | babel.NodePath<babel.types.Expression>
+ *  node: undefined | babel.types.Expression
  * }}
  */
 module.exports = function parseComponent(path) {
@@ -39,25 +39,11 @@ module.exports = function parseComponent(path) {
     id.name === FUNCTIONAL_COMPONENT
   ) {
     const arg = path.parentPath.parentPath.node.arguments[0];
-    /**
-     * @type {undefined | babel.NodePath<babel.types.Expression>}
-     */
-    let componentPath = undefined;
 
-    path.parentPath.parentPath.traverse({
-      Expression(path) {
-        if (path.node === arg) {
-          componentPath = path;
-        }
-      },
-    });
-
-    if (componentPath) {
-      return {
-        type: id.name,
-        path: componentPath,
-      };
-    }
+    return {
+      type: id.name,
+      node: t.isExpression(arg) ? arg : undefined,
+    };
   }
   return null;
 };

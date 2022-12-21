@@ -6,19 +6,25 @@ const plugin = require("../index.js");
 
 describe("transform", () => {
   test.each(loadSamples())("%s", (_, code) => {
-    expect(transform(code)).toMatchSnapshot()
+    expect(transform(code)).toMatchSnapshot();
   });
 });
 
 function loadSamples() {
-  const dir = path.resolve(__dirname, "..", "..", "src", "test-samples");
-  return fs.readdirSync(dir).map((fileName) => {
-    return [fileName, fs.readFileSync(path.resolve(dir, fileName)).toString()];
-  });
+  const dir = path.resolve(__dirname, "..", "..", "test-samples");
+  return fs
+    .readdirSync(dir)
+    .filter((fileName) => fileName.endsWith(".ts") || fileName.endsWith(".tsx"))
+    .map((fileName) => {
+      return [
+        fileName,
+        fs.readFileSync(path.resolve(dir, fileName)).toString(),
+      ];
+    });
 }
 
 /**
- * @param {string} code 
+ * @param {string} code
  * @returns {string}
  */
 function transform(code) {

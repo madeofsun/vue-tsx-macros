@@ -2,8 +2,8 @@ module.exports = {
   /** @type {'vue-tsx-macros'} */
   MACRO_IMPORT: "vue-tsx-macros",
 
-  /** @type {'$component'} */
-  COMPONENT_MACRO: "$component",
+  /** @type {'component$'} */
+  COMPONENT_MACRO: "component$",
   /** @type {'define'} */
   STANDARD_COMPONENT: "define",
   /** @type {'functional'} */
@@ -11,6 +11,6 @@ module.exports = {
   /** @type {'withDefaults'} */
   WITH_DEFAULTS: "withDefaults",
 
-  /** @type {'$defaultProps'} */
-  DEFAULT_PROPS_MACRO: "$defaultProps",
+  /** @type {'defaultProps$'} */
+  DEFAULT_PROPS_MACRO: "defaultProps$",
 };

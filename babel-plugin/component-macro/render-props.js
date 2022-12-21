@@ -3,13 +3,14 @@ const babel = require("@babel/core");
 const t = babel.types;
 
 /**
+ * @param {babel.NodePath} path
  * @param {{
  *  props: ReturnType<typeof import("./parse-props")>
  *  defaultProps: ReturnType<typeof import("./parse-defaults")>
  * }} options
  * @returns {null | babel.types.Expression}
  */
-module.exports = function renderProps(options) {
+module.exports = function renderProps(path, options) {
   const { props, defaultProps } = options;
 
   if (t.isExpression(props)) {
@@ -24,14 +25,14 @@ module.exports = function renderProps(options) {
     /** @type {babel.types.Identifier} */
     let defaultsId;
 
-    if (t.isIdentifier(defaultProps.node)) {
-      defaultsId = defaultProps.node;
+    if (t.isIdentifier(defaultProps)) {
+      defaultsId = defaultProps;
     } else {
-      const statement = defaultProps.findParent((path) => path.isStatement());
-      defaultsId = defaultProps.scope.generateUidIdentifier();
+      const statement = path.findParent((path) => path.isStatement());
+      defaultsId = path.scope.generateUidIdentifier();
       statement?.insertBefore(
         t.variableDeclaration("const", [
-          t.variableDeclarator(defaultsId, defaultProps.node),
+          t.variableDeclarator(defaultsId, defaultProps),
         ])
       );
     }

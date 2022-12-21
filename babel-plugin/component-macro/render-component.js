@@ -17,30 +17,31 @@ const t = babel.types;
  */
 
 /**
+ * @param {babel.NodePath} path
  * @param {RenderOptions} options
  * @returns {null | babel.types.Expression}
  */
-module.exports = function renderComponent(options) {
+module.exports = function renderComponent(path, options) {
   if (!options.component) {
     return null;
   }
 
-  const props = renderProps(options);
+  const props = renderProps(path, options);
 
-  const { type: componentType, path: componentPath } = options.component;
+  const { type: componentType, node: componentNode } = options.component;
 
   const name =
-    (componentPath?.isFunctionExpression() &&
-      componentPath.node.id &&
-      t.isIdentifier(componentPath.node.id) &&
-      componentPath.node.id.name) ||
+    (t.isFunctionExpression(componentNode) &&
+      componentNode.id &&
+      t.isIdentifier(componentNode.id) &&
+      componentNode.id.name) ||
     options.variableName;
 
-  if (componentPath && componentType === FUNCTIONAL_COMPONENT) {
+  if (componentNode && componentType === FUNCTIONAL_COMPONENT) {
     return t.callExpression(
       t.memberExpression(t.identifier("Object"), t.identifier("assign")),
       [
-        componentPath.node,
+        componentNode,
         t.objectExpression(
           filterNot(isNull, [
             name
@@ -57,10 +58,10 @@ module.exports = function renderComponent(options) {
   }
 
   if (
-    componentPath?.isArrowFunctionExpression() ||
-    componentPath?.isFunctionExpression()
+    t.isArrowFunctionExpression(componentNode) ||
+    t.isFunctionExpression(componentNode)
   ) {
-    transformExpose(componentPath);
+    transformExpose(componentNode);
   }
 
   return t.objectExpression(
@@ -69,8 +70,8 @@ module.exports = function renderComponent(options) {
         ? t.objectProperty(t.identifier("name"), t.stringLiteral(name))
         : null,
       props && t.objectProperty(t.identifier("props"), props),
-      componentPath
-        ? t.objectProperty(t.identifier("setup"), componentPath.node)
+      componentNode
+        ? t.objectProperty(t.identifier("setup"), componentNode)
         : null,
     ])
   );

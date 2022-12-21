@@ -4,7 +4,8 @@
   "main": "src/index.ts",
   "type": "commonjs",
   "peerDependencies": {
-    "@babel/core": "*"
+    "@babel/core": "^7.0.0",
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "~7.20.2",
@@ -18,9 +19,10 @@
     "prettier": "~2.8.0"
   },
   "scripts": {
-    "types": "tsc",
     "types:babel-plugin": "tsc --project ./babel-plugin/jsconfig.json",
-    "test": "jest"
+    "types:test-samples": "tsc --project ./babel-plugin/jsconfig.json",
+    "test:babel-plugin": "jest",
+    "build": "tsc --noEmit false --outDir dist --declaration true"
   },
   "description": "Set of marcos for convenient definitions of Vue JSX components.",
   "keywords": [

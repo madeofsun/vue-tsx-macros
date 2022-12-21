@@ -6,13 +6,13 @@ const t = babel.types;
 
 /**
  *
- * @param {babel.NodePath<babel.types.ArrowFunctionExpression>
- * | babel.NodePath<babel.types.FunctionExpression>} path
+ * @param {babel.types.ArrowFunctionExpression
+ * | babel.types.FunctionExpression} node
  * @returns {void}
  */
-module.exports = function transformExpose(path) {
-  if (t.isBlockStatement(path.node.body)) {
-    const returnStatement = path.node.body.body[path.node.body.body.length - 1];
+module.exports = function transformExpose(node) {
+  if (t.isBlockStatement(node.body)) {
+    const returnStatement = node.body.body[node.body.body.length - 1];
     if (
       t.isReturnStatement(returnStatement) &&
       t.isCallExpression(returnStatement.argument)
@@ -28,10 +28,12 @@ module.exports = function transformExpose(path) {
         if (secondArgument) {
           returnStatement.argument = t.sequenceExpression(
             filterNot(isNull, [
-              t.callExpression(t.identifier("expose"), [callExpression.arguments[0]]),
+              t.callExpression(t.identifier("expose"), [
+                callExpression.arguments[0],
+              ]),
               secondArgument,
             ])
-          )
+          );
         }
       }
     }

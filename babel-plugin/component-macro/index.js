@@ -14,7 +14,8 @@ const componentMacro = createMacro(COMPONENT_MACRO, (path) => {
   if (!parsed) {
     return false;
   }
-  const component = renderComponent(parsed.options);
+
+  const component = renderComponent(parsed.pathToReplace, parsed.options);
   if (!component) {
     return false;
   }
@@ -30,7 +31,7 @@ module.exports = componentMacro;
  * @param {babel.NodePath<babel.types.CallExpression>} path
  * @returns {null | {
  *  pathToReplace: babel.NodePath,
- *  options: Parameters<typeof renderComponent>[0]
+ *  options: Parameters<typeof renderComponent>[1]
  * }}
  */
 function parse(path) {

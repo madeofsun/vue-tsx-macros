@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "jsx": "preserve",
+    "target": "esnext",
+    "baseUrl": "./",
+    "paths": {
+      "vue-tsx-macros": ["../src/index.ts"]
+    },
+    "moduleResolution": "node"
+  },
+  "include": ["./*.ts", "./*.tsx"]
+}

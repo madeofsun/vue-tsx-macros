@@ -1,4 +1,4 @@
-import { $component } from "vue-tsx-macros";
+import { component$ } from "vue-tsx-macros";
 
 export interface ExampleProps {
   color?: "red" | "blue";
@@ -6,11 +6,11 @@ export interface ExampleProps {
   array?: string[];
 }
 
-export default $component().define(function DefaultExample() {
+export default component$().define(function DefaultExample() {
   return <div></div>;
 });
 
-export const Example = $component<ExampleProps>().define((props) => {
+export const Example = component$<ExampleProps>().define((props) => {
   return () => {
     const color: string | undefined = props.color;
     const counter: number = props.counter;
@@ -23,7 +23,7 @@ export const Example = $component<ExampleProps>().define((props) => {
   };
 });
 
-export const Example1 = $component<{
+export const Example1 = component$<{
   color?: "red" | "blue";
   counter: number;
   array?: string[];
@@ -46,7 +46,7 @@ export type Example2Props = {
   array?: string[];
 };
 
-export const Example2 = $component<Example2Props>().define((props) => {
+export const Example2 = component$<Example2Props>().define((props) => {
   return () => {
     const color: string | undefined = props.color;
     const counter: number = props.counter;
@@ -59,7 +59,7 @@ export const Example2 = $component<Example2Props>().define((props) => {
   };
 });
 
-export const Example3 = $component({ color: { type: String } }).define(
+export const Example3 = component$({ color: { type: String } }).define(
   (props) => {
     return () => {
       const color: string | undefined = props.color;

@@ -1,4 +1,4 @@
-import { $component } from "vue-tsx-macros";
+import { component$ } from "vue-tsx-macros";
 
 export interface ExampleProps {
   color?: "red" | "blue";
@@ -6,7 +6,7 @@ export interface ExampleProps {
   array?: string[];
 }
 
-export const Example = $component<ExampleProps>().functional((props) => {
+export const Example = component$<ExampleProps>().functional((props) => {
   const color: string | undefined = props.color;
   const counter: number = props.counter;
   return (

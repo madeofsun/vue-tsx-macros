@@ -1,4 +1,5 @@
-import {
+import { RuntimeUsageError } from "utils/runtime-usage-error";
+import type {
   ComponentPropsOptions,
   DefineComponent,
   ExtractPropTypes,
@@ -8,7 +9,7 @@ import {
   VNodeChild,
 } from "vue";
 
-import { InferDefaults, PropsWithDefaults } from "./utils/prop-defaults";
+import type { InferDefaults, PropsWithDefaults } from "./utils/prop-defaults";
 
 interface CustomExpose {
   (exposed?: Record<string, any>): void;
@@ -31,18 +32,15 @@ type ComponentFactory<P = {}, Defaults = {}> = {
   ) => FunctionalComponent<P>;
 };
 
-export function $component(): ComponentFactory;
-export function $component<P extends ComponentPropsOptions>(
+export function component$(): ComponentFactory;
+export function component$<P extends ComponentPropsOptions>(
   props: P
 ): ComponentFactory<ExtractPropTypes<P>>;
-export function $component<P>(): ComponentFactory<P> & {
+export function component$<P>(): ComponentFactory<P> & {
   withDefaults: <D extends InferDefaults<P>>(
     defaults: D
   ) => ComponentFactory<P, D>;
 };
-export function $component(props?: unknown): never {
-  throw Error(`component() macros is called in runtime.
-- Check your build
-  - vue-tsx-macros/babel-plugin must be used with babel
-`);
+export function component$(props?: unknown): never {
+  throw new RuntimeUsageError("component$");
 }

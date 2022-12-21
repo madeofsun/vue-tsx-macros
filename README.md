@@ -20,17 +20,15 @@ Usage examples - [test-samples](./src/test-samples)
 
 ### How to use
 
-- Babel
+1. Install package to your project
 
-Add to babel plugins alongside `@vue/babel-plugin-jsx`
-
-```js
-{
-  "plugins": ["vue-tsx-macros/babel-plugin", "@vue/babel-plugin-jsx"]
-}
+```bash
+npm install vue-tsx-macros
 ```
 
-- Vite
+1. Include babel plugin into your build configuration
+
+- - Vite
 
 Add babel plugin to `@vitejs/plugin-vue-jsx` options
 
@@ -46,12 +44,40 @@ export default {
 };
 ```
 
+If you are using `nuxt` use `extendViteConfig`
+
+- - Babel
+
+Add plugin to your babel config alongside `@vue/babel-plugin-jsx`
+
+```js
+{
+  "plugins": ["@vue/babel-plugin-jsx", "vue-tsx-macros/babel-plugin"]
+}
+```
+
+1. Use in your project
+
+```tsx
+import { component$ } from "vue-tsx-macros";
+
+export type ExampleProps = {
+  initialValue?: number;
+};
+
+export const Example = component$<ExampleProps>().define((props) => {
+  const counter = ref(props.initialValue || 0);
+
+  return () => <div>{counter.value}</div>;
+});
+```
+
 ### Transform examples
 
 - Standard component
 
 ```tsx
-export const Example = $component<{ initialValue?: number }>().define(
+export const Example = component$<{ initialValue?: number }>().define(
   (props) => {
     const counter = ref(props.initialValue || 0);
     return () => <div>{counter.value}</div>;
@@ -73,7 +99,7 @@ export const Example = {
 - Standard component with defaultProps
 
 ```tsx
-export const Example = $component<{ initialValue?: number }>()
+export const Example = component$<{ initialValue?: number }>()
   .withDefaults({ initialValue: 0 })
   .define((props) => {
     const counter = ref(props.initialValue);
@@ -103,7 +129,7 @@ export const Example = {
 - Standard component with expose and render together
 
 ```tsx
-export const Example = $component<{ initialValue?: number }>().define(
+export const Example = component$<{ initialValue?: number }>().define(
   (props, { expose }) => {
     const counter = ref(props.initialValue || 0);
     return expose({ counter }, () => <div>{counter.value}</div>);
@@ -130,7 +156,7 @@ export const Example = {
 - Functional component
 
 ```tsx
-export const Example = $component<{ size: 500 }>().functional(({ size }) => {
+export const Example = component$<{ size: 500 }>().functional(({ size }) => {
   return <div>{size}</div>;
 });
 ```
@@ -153,44 +179,44 @@ export const Example = Object.assign(
 
 ```ts
 // ok
-export const Example = $component<{ size: number }>().define(...)
+export const Example = component$<{ size: number }>().define(...)
 
 // ok
 export interface ExampleProps {
   size: number
 }
-export const Example = $component<Props>().define(...)
+export const Example = component$<Props>().define(...)
 
 // ok
 export type ExampleProps = {
   size: number
 }
-export const Example = $component<Props>().define(...)
+export const Example = component$<Props>().define(...)
 
 // props will be ignored
 import { SomeProps } from './some-file'
-export const Example = $component<SomeProps>().define(...)
+export const Example = component$<SomeProps>().define(...)
 ```
 
 - Special overload for `expose` (the one with `render` function) must be used only as `return expose({}, () => ...)`
 
 ```tsx
 // ok
-export const Example = $component().define((_, { expose }) => {
+export const Example = component$().define((_, { expose }) => {
   const counter = ref(0);
   const increment = () => counter.value++;
   return expose({ increment }, () => <div>{counter.value}</div>);
 });
 
 // render function will be ignored
-export const Example = $component().define((_, context) => {
+export const Example = component$().define((_, context) => {
   const counter = ref(0);
   const increment = () => counter.value++;
   return context.expose({ increment }, () => <div>{counter.value}</div>);
 });
 
 // ok
-export const Example = $component().define((_, context) => {
+export const Example = component$().define((_, context) => {
   const counter = ref(0);
   const increment = () => counter.value++;
   const expose = context.expose;
@@ -198,7 +224,7 @@ export const Example = $component().define((_, context) => {
 });
 
 // render function will be ignored
-export const Example = $component().define((_, context) =>
+export const Example = component$().define((_, context) =>
   expose({}, () => <div>{counter.value}</div>)
 );
 ```

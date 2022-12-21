@@ -10,7 +10,7 @@ const t = babel.types;
 module.exports = function parseProps(path) {
   const propsArg = path.node.arguments[0];
   if (t.isExpression(propsArg)) {
-    return propsArg
+    return propsArg;
   }
 
   const propsType = path.node.typeParameters?.params[0];
