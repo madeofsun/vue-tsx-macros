@@ -1,4 +1,3 @@
-import { RuntimeUsageError } from "utils/runtime-usage-error";
 import type {
   ComponentPropsOptions,
   DefineComponent,
@@ -10,6 +9,7 @@ import type {
 } from "vue";
 
 import type { InferDefaults, PropsWithDefaults } from "./utils/prop-defaults";
+import { RuntimeUsageError } from "./utils/runtime-usage-error";
 
 interface CustomExpose {
   (exposed?: Record<string, any>): void;
