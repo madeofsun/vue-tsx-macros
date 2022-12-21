@@ -10,7 +10,7 @@ Includes
 - `typescript` types
 - `babel` plugin for code transformation
 
-Usage examples - [test-samples](./src/test-samples)
+Usage examples - [test-samples](./test-samples)
 
 ### Features
 

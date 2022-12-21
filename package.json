@@ -1,7 +1,8 @@
 {
   "name": "vue-tsx-macros",
-  "version": "0.0.0",
-  "main": "src/index.ts",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "commonjs",
   "peerDependencies": {
     "@babel/core": "^7.0.0",
@@ -22,7 +23,8 @@
     "types:babel-plugin": "tsc --project ./babel-plugin/jsconfig.json",
     "types:test-samples": "tsc --project ./babel-plugin/jsconfig.json",
     "test:babel-plugin": "jest",
-    "build": "tsc --noEmit false --outDir dist --declaration true"
+    "build": "tsc --noEmit false --outDir dist --declaration true",
+    "prepack": "npm run build"
   },
   "description": "Set of marcos for convenient definitions of Vue JSX components.",
   "keywords": [
