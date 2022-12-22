@@ -26,9 +26,9 @@ Usage examples - [test-samples](./test-samples)
 npm install vue-tsx-macros
 ```
 
-1. Include babel plugin into your build configuration
+2. Include babel plugin into your build configuration
 
-- - Vite
+- Vite
 
 Add babel plugin to `@vitejs/plugin-vue-jsx` options
 
@@ -46,7 +46,7 @@ export default {
 
 If you are using `nuxt` use `extendViteConfig`
 
-- - Babel
+- Babel
 
 Add plugin to your babel config alongside `@vue/babel-plugin-jsx`
 
@@ -56,7 +56,7 @@ Add plugin to your babel config alongside `@vue/babel-plugin-jsx`
 }
 ```
 
-1. Use in your project
+3. Use in your code
 
 ```tsx
 import { component$ } from "vue-tsx-macros";
