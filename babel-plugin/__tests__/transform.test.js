@@ -4,14 +4,14 @@ const path = require("node:path");
 const babel = require("@babel/core");
 const plugin = require("../index.js");
 
-describe("transform", () => {
+describe("examples", () => {
   test.each(loadSamples())("%s", (_, code) => {
     expect(transform(code)).toMatchSnapshot();
   });
 });
 
 function loadSamples() {
-  const dir = path.resolve(__dirname, "..", "..", "test-samples");
+  const dir = path.resolve(__dirname, "..", "..", "examples");
   return fs
     .readdirSync(dir)
     .filter((fileName) => fileName.endsWith(".ts") || fileName.endsWith(".tsx"))

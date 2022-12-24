@@ -5,6 +5,7 @@ const createMacro = require("../define-macro");
 const findPathToReplace = require("./find-path-to-replace");
 const parseComponent = require("./parse-component");
 const parseDefaults = require("./parse-defaults");
+const parseEmits = require("./parse-emits");
 const parseProps = require("./parse-props");
 const renderComponent = require("./render-component");
 const parseVariableName = require("./parse-variable-name");
@@ -43,6 +44,7 @@ function parse(path) {
     pathToReplace,
     options: {
       props: parseProps(path),
+      emits: parseEmits(path),
       defaultProps: parseDefaults(path),
       component: parseComponent(path),
       variableName: parseVariableName(path),

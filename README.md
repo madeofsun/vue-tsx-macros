@@ -10,13 +10,20 @@ Includes
 - `typescript` types
 - `babel` plugin for code transformation
 
-Usage examples - [test-samples](./test-samples)
+[Usage examples](./examples)
 
 ### Features
 
-- infers component `name` from function or variable name
-- infers component `props` similar to `defineProps()` and `withDefaults()` from `vue`
-- adds special overload for `expose` from `setup` that allows to it without a loss of correct type inference
+- `component$`
+
+  - infers component `name` from function or variable name
+  - infers component `props` similar to `defineProps()` and `withDefaults()` from `vue`
+  - infers component `emits` similar to `defineEmits()` from `vue`
+  - adds special overload for `expose` from `setup` that allows to use it with correct type inference
+
+- `defaultProps$`
+
+  - adds type assistance for default props definition, in case you want to reuse them outside of `withDefaults()`
 
 ### How to use
 
@@ -65,10 +72,8 @@ export type ExampleProps = {
   initialValue?: number;
 };
 
-export const Example = component$<ExampleProps>().define((props) => {
-  const counter = ref(props.initialValue || 0);
-
-  return () => <div>{counter.value}</div>;
+export const Example = component$().define((props) => {
+  return () => <div />;
 });
 ```
 
@@ -80,7 +85,8 @@ export const Example = component$<ExampleProps>().define((props) => {
 export const Example = component$<{ initialValue?: number }>().define(
   (props) => {
     const counter = ref(props.initialValue || 0);
-    return () => <div>{counter.value}</div>;
+    const onClick = () => (counter.value += 1);
+    return () => <button onClick={onClick}>{counter.value}</button>;
   }
 );
 ```
@@ -91,19 +97,21 @@ export const Example = {
   props: ["initialValue"],
   setup: (props) => {
     const counter = ref(props.initialValue || 0);
-    return () => <div>{counter.value}</div>;
+    const onClick = () => (counter.value += 1);
+    return () => <button onClick={onClick}>{counter.value}</button>;
   },
 };
 ```
 
-- Standard component with defaultProps
+- With defaultProps
 
 ```tsx
 export const Example = component$<{ initialValue?: number }>()
   .withDefaults({ initialValue: 0 })
   .define((props) => {
     const counter = ref(props.initialValue);
-    return () => <div>{counter.value}</div>;
+    const onClick = () => (counter.value += 1);
+    return () => <button onClick={onClick}>{counter.value}</button>;
   });
 ```
 
@@ -121,34 +129,51 @@ export const Example = {
   },
   setup: (props) => {
     const counter = ref(props.initialValue);
-    return () => <div>{counter.value}</div>;
+    const onClick = () => counter.value + 1;
+    return () => <button onClick={onClick}>{counter.value}</button>;
   },
 };
 ```
 
-- Standard component with expose and render together
+- With emits
 
 ```tsx
-export const Example = component$<{ initialValue?: number }>().define(
-  (props, { expose }) => {
-    const counter = ref(props.initialValue || 0);
-    return expose({ counter }, () => <div>{counter.value}</div>);
-  }
-);
+type Props = {
+  initialValue: number;
+};
+
+type Emits = {
+  update: (value: number) => void;
+};
+
+export const Example = component$<Props, Emits>().define((props, { emit }) => {
+  const counter = ref(props.initialValue);
+  const onClick = () => {
+    counter.value += 1;
+    emit("update", counter.value);
+  };
+  return () => <button onClick={onClick}>{counter.value}</button>;
+});
 ```
 
 ```jsx
+type Props = {
+  initialValue: number,
+};
+type Emits = {
+  update: (value: number) => void,
+};
 export const Example = {
   name: "Example",
   props: ["initialValue"],
-  setup: (props, { expose }) => {
-    const counter = ref(props.initialValue || 0);
-    return (
-      expose({
-        counter,
-      }),
-      () => <div>{counter.value}</div>
-    );
+  emits: ["update"],
+  setup: (props, { emit }) => {
+    const counter = ref(props.initialValue);
+    const onClick = () => {
+      counter.value += 1;
+      emit("update", counter.value);
+    };
+    return () => <button onClick={onClick}>{counter.value}</button>;
   },
 };
 ```
@@ -156,15 +181,17 @@ export const Example = {
 - Functional component
 
 ```tsx
-export const Example = component$<{ size: 500 }>().functional(({ size }) => {
-  return <div>{size}</div>;
-});
+export const Example = component$<{ size?: number }>().functional(
+  ({ size = 500 }) => {
+    return <div data-size={size} />;
+  }
+);
 ```
 
 ```jsx
 export const Example = Object.assign(
-  ({ size }) => {
-    return <div>{size}</div>;
+  ({ size = 500 }) => {
+    return <div data-size={size} />;
   },
   {
     displayName: "Example",
@@ -175,7 +202,7 @@ export const Example = Object.assign(
 
 ## Limitations
 
-- Type of `props` must be a `TypeLiteral` or a `TypeReference` to `Interface` or `TypeAlias` in the same file (same limitation as for `defineProps()` from `vue`)
+- Type parameter for `props` or `emits` must be a `TypeLiteral` or a `TypeReference` to `InterfaceDeclaration` or `TypeAliasDeclaration` with `TypeLiteral` in the same file (similar to `defineProps()` from `vue`). Note that only explicitly enumerated properties are included.
 
 ```ts
 // ok
@@ -193,9 +220,13 @@ export type ExampleProps = {
 }
 export const Example = component$<Props>().define(...)
 
-// props will be ignored
+// props are ignored
 import { SomeProps } from './some-file'
 export const Example = component$<SomeProps>().define(...)
+
+// props are ignored
+export type ExampleProps = { size: number } & { extra: number }
+export const Example = component$<ExampleProps>().define(...)
 ```
 
 - Special overload for `expose` (the one with `render` function) must be used only as `return expose({}, () => ...)`
@@ -208,7 +239,7 @@ export const Example = component$().define((_, { expose }) => {
   return expose({ increment }, () => <div>{counter.value}</div>);
 });
 
-// render function will be ignored
+// render function is ignored
 export const Example = component$().define((_, context) => {
   const counter = ref(0);
   const increment = () => counter.value++;
@@ -223,7 +254,7 @@ export const Example = component$().define((_, context) => {
   return expose({ increment }, () => <div>{counter.value}</div>);
 });
 
-// render function will be ignored
+// render function is ignored
 export const Example = component$().define((_, context) =>
   expose({}, () => <div>{counter.value}</div>)
 );

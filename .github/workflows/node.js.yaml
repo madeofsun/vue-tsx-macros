@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
-      - run: npm run types:test-samples
+      - run: npm run types:examples
       - run: npm run types:babel-plugin
       - run: npm run test:babel-plugin
       - run: npm run build

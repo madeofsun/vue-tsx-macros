@@ -1,42 +1,116 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`transform functional.tsx 1`] = `
-"export interface ExampleProps {
-  color?: "red" | "blue";
-  counter: number;
-  array?: string[];
-}
+exports[`examples functional.tsx 1`] = `
+"// literal
 export const Example = Object.assign(props => {
-  const color: string | undefined = props.color;
-  const counter: number = props.counter;
   return <div>
-      {counter}
-      {color}
+      {props.counter.toFixed()}
+      {props.color?.trim()}
     </div>;
 }, {
   displayName: "Example",
-  props: ["color", "counter", "array"]
+  props: ["color", "counter"]
+});
+<Example counter={0} color={"red"} />;
+
+// interface
+export interface Example1Props {
+  color?: "red" | "blue";
+  counter: number;
+}
+export const Example1 = Object.assign(props => {
+  return <div>
+      {props.counter.toFixed()}
+      {props.color?.trim()}
+    </div>;
+}, {
+  displayName: "Example1",
+  props: ["color", "counter"]
+});
+<Example1 counter={0} color={"red"} />;
+
+// type
+export type Example2Props = {
+  color?: "red" | "blue";
+  counter: number;
+};
+export const Example2 = Object.assign(props => {
+  return <div>
+      {props.counter.toFixed()}
+      {props.color?.trim()}
+    </div>;
+}, {
+  displayName: "Example2",
+  props: ["color", "counter"]
+});
+<Example2 counter={0} color={"red"} />;
+
+// explicit
+export const Example3 = Object.assign(props => {
+  return <div>{props.color?.trim()}</div>;
+}, {
+  displayName: "Example3",
+  props: {
+    color: String
+  }
+});
+<Example3 />;
+export default Object.assign(function DefaultExample() {
+  return <div />;
+}, {
+  displayName: "DefaultExample"
 });"
 `;
 
-exports[`transform functional-defaults.tsx 1`] = `
-"export interface ExampleProps {
-  color?: "red" | "blue";
+exports[`examples functional-defaults.tsx 1`] = `
+"// reference
+export interface ExampleProps {
   counter: number;
+  color?: "red" | "blue";
   array?: string[];
 }
-const _temp = {
-  color: "red"
+export const exampleDefaults = {
+  color: "red",
+  array: () => []
 };
 export const Example = Object.assign(props => {
-  const color: string = props.color;
-  const counter: number = props.counter;
   return <div>
-        {counter}
-        {color}
+        {props.counter.toFixed()}
+        {props.color.trim()}
+        {props.array.slice()}
       </div>;
 }, {
   displayName: "Example",
+  props: {
+    "counter": {
+      type: null,
+      default: exampleDefaults["counter"]
+    },
+    "color": {
+      type: null,
+      default: exampleDefaults["color"]
+    },
+    "array": {
+      type: null,
+      default: exampleDefaults["array"]
+    }
+  }
+});
+<Example counter={0} color={"red"} />;
+
+// literal
+const _temp = {
+  color: "red",
+  array: () => []
+};
+export const Example1 = Object.assign(props => {
+  return <div>
+        {props.counter.toFixed()}
+        {props.color.trim()}
+        {props.array.slice()}
+      </div>;
+}, {
+  displayName: "Example1",
   props: {
     "color": {
       type: null,
@@ -51,49 +125,73 @@ export const Example = Object.assign(props => {
       default: _temp["array"]
     }
   }
-});"
+});
+<Example1 counter={0} color={"red"} />;"
 `;
 
-exports[`transform standard.tsx 1`] = `
-"export interface ExampleProps {
+exports[`examples functional-emits.tsx 1`] = `
+"export type ExampleProps = {
   color?: "red" | "blue";
   counter: number;
-  array?: string[];
-}
-export default {
-  name: "DefaultExample",
-  setup: function DefaultExample() {
-    return <div></div>;
-  }
 };
+export type ExampleEmits = {
+  change: (value: number) => void;
+  update: (value: string) => void;
+};
+export const Example = Object.assign((props, {
+  emit
+}) => {
+  return <button data-color={props.color?.trim()} onClick={() => {
+    emit("change", 0);
+    emit("update", "");
+  }}>
+        {props.counter.toFixed()}
+      </button>;
+}, {
+  displayName: "Example",
+  props: ["color", "counter"]
+});
+<Example counter={0} onChange={value => value.toFixed()} />;"
+`;
+
+exports[`examples standard.tsx 1`] = `
+"import { onMounted } from "vue";
+// literal
 export const Example = {
   name: "Example",
-  props: ["color", "counter", "array"],
+  props: ["color", "counter"],
   setup: props => {
-    return () => {
-      const color: string | undefined = props.color;
-      const counter: number = props.counter;
-      return <div>
-        {counter}
-        {color}
-      </div>;
-    };
+    onMounted(() => {
+      console.log("mounted");
+    });
+    return () => <div>
+      {props.counter.toFixed()}
+      {props.color?.trim()}
+    </div>;
   }
 };
+<Example counter={0} color={"red"} />;
+
+// interface
+export interface Example1Props {
+  color?: "red" | "blue";
+  counter: number;
+}
 export const Example1 = {
   name: "Example1",
-  props: ["color", "counter", "array"],
+  props: ["color", "counter"],
   setup: props => {
-    return () => {
-      const color: string | undefined = props.color;
-      const counter: number = props.counter;
-      return <div>
-        {counter}
-        {color}
-      </div>;
-    };
+    onMounted(() => {
+      console.log("mounted");
+    });
+    return () => <div>
+      {props.counter.toFixed()}
+      {props.color?.trim()}
+    </div>;
   }
 };
+
+// type
 export type Example2Props = {
   color?: "red" | "blue";
   counter: number;
@@ -103,71 +201,86 @@ export const Example2 = {
   name: "Example2",
   props: ["color", "counter", "array"],
   setup: props => {
-    return () => {
-      const color: string | undefined = props.color;
-      const counter: number = props.counter;
-      return <div>
-        {counter}
-        {color}
-      </div>;
-    };
+    onMounted(() => {
+      console.log("mounted");
+    });
+    return () => <div>
+      {props.counter.toFixed()}
+      {props.color?.trim()}
+    </div>;
   }
 };
+
+// ComponentPropsOptions
 export const Example3 = {
   name: "Example3",
   props: {
-    color: {
-      type: String
-    }
+    color: String
   },
   setup: props => {
-    return () => {
-      const color: string | undefined = props.color;
-      return <div>{color}</div>;
-    };
+    onMounted(() => {
+      console.log("mounted");
+    });
+    return () => <div>{props.color?.trim()}</div>;
+  }
+};
+
+// name from function
+export default {
+  name: "DefaultExample",
+  setup: function DefaultExample() {
+    onMounted(() => {
+      console.log("mounted");
+    });
+    return () => <div />;
   }
 };"
 `;
 
-exports[`transform standard-defaults.tsx 1`] = `
-"export interface ExampleProps {
-  color?: "red" | "blue";
+exports[`examples standard-defaults.tsx 1`] = `
+"// reference
+export interface ExampleProps {
   counter: number;
+  color?: "red" | "blue";
   array?: string[];
 }
-export const defaults = {
+export const exampleDefaults = {
   color: "red",
-  boolean: false,
   array: () => []
 };
 export const Example = {
   name: "Example",
   props: {
-    "color": {
-      type: null,
-      default: defaults["color"]
-    },
     "counter": {
       type: null,
-      default: defaults["counter"]
+      default: exampleDefaults["counter"]
+    },
+    "color": {
+      type: null,
+      default: exampleDefaults["color"]
     },
     "array": {
       type: null,
-      default: defaults["array"]
+      default: exampleDefaults["array"]
     }
   },
   setup: props => {
-    return () => {
-      const color: "red" | "blue" = props.color;
-      return <div>{color}</div>;
-    };
+    return () => <div>
+        {props.counter.toFixed()}
+        {props.color.trim()}
+        {props.array.slice()}
+      </div>;
   }
 };
+<Example counter={0} color={"red"} />;
+
+// literal
 const _temp = {
-  color: "red"
+  color: "red",
+  array: () => []
 };
-export const Example2 = {
-  name: "Example2",
+export const Example1 = {
+  name: "Example1",
   props: {
     "color": {
       type: null,
@@ -183,67 +296,63 @@ export const Example2 = {
     }
   },
   setup: props => {
-    return () => {
-      const color: "red" | "blue" = props.color;
-      return <div>{color}</div>;
-    };
+    return () => <div>
+        {props.counter.toFixed()}
+        {props.color.trim()}
+        {props.array.slice()}
+      </div>;
   }
-};"
+};
+<Example1 counter={0} color={"red"} />;"
 `;
 
-exports[`transform standard-expose.tsx 1`] = `
+exports[`examples standard-emits.tsx 1`] = `
+"export type ExampleProps = {
+  color?: "red" | "blue";
+  counter: number;
+};
+export type ExampleEmits = {
+  change: (value: number) => void;
+  update: (value: string) => void;
+};
+export const Example = {
+  name: "Example",
+  props: ["color", "counter"],
+  emits: ["change", "update"],
+  setup: (props, {
+    emit
+  }) => {
+    return () => <button data-color={props.color?.trim()} onClick={() => {
+      emit("change", 0);
+      emit("update", "");
+    }}>
+        {props.counter.toFixed()}
+      </button>;
+  }
+};
+<Example counter={0} onChange={value => value.toFixed()} />;"
+`;
+
+exports[`examples standard-expose.tsx 1`] = `
 "import { ref } from "vue";
 export interface ExampleProps {
-  color?: "red" | "blue";
   counter: number;
   array?: string[];
 }
 export const Example1 = {
   name: "Example1",
-  props: ["color", "counter", "array"],
+  props: ["counter", "array"],
   setup: (props, {
     expose
   }) => {
     const list = ref(props.array);
     return expose({
       list
-    }), () => <div>{props.counter}</div>;
-  }
-};
-const instance = ((null as unknown) as InstanceType<typeof Example1>);
-console.log(instance.list?.[0]?.trim());
-export const Example2 = {
-  name: "Example2",
-  props: ["color", "counter", "array"],
-  setup: (props, {
-    expose
-  }) => {
-    const list = ref(props.array);
-    return expose({
-      list
-    }), () => <div>{props.counter}</div>;
-  }
-};
-export const Example3 = {
-  name: "Example3",
-  props: ["color", "counter", "array"],
-  setup: (props, {
-    expose
-  }) => {
-    const list = ref(props.array);
-    return expose({
+    }), Object.assign(() => <div>{props.counter.toFixed()}</div>, {
       list
     });
   }
 };
-export const Example4 = {
-  name: "Example4",
-  props: ["color", "counter", "array"],
-  setup: (props, context) => {
-    const list = ref(props.array);
-    return context.expose({
-      list
-    });
-  }
-};"
+const instance1 = ((null as unknown) as InstanceType<typeof Example1>);
+console.log(instance1.list?.[0]?.trim());"
 `;
