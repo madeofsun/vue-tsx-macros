@@ -1,7 +1,7 @@
 const babel = require("@babel/core");
 
 const { COMPONENT_MACRO } = require("../constants");
-const createMacro = require("../define-macro");
+const defineMacro = require("../define-macro");
 const findPathToReplace = require("./find-path-to-replace");
 const parseComponent = require("./parse-component");
 const parseDefaults = require("./parse-defaults");
@@ -10,7 +10,7 @@ const parseProps = require("./parse-props");
 const renderComponent = require("./render-component");
 const parseVariableName = require("./parse-variable-name");
 
-const componentMacro = createMacro(COMPONENT_MACRO, (path) => {
+const componentMacro = defineMacro(COMPONENT_MACRO, (path) => {
   const parsed = parse(path);
   if (!parsed) {
     return false;

@@ -1,18 +1,15 @@
-import { component$ } from "vue-tsx-macros";
+import { component$, useRender$ } from "vue-tsx-macros";
 import { ref } from "vue";
 
-export interface ExampleProps {
-  counter: number;
-  array?: string[];
-}
+export const Example = component$().define(() => {
+  const counter = ref(0);
 
-export const Example1 = component$<ExampleProps>().define(
-  (props, { expose }) => {
-    const list = ref(props.array);
+  const increment = () => (counter.value += 1);
 
-    return expose({ list }, () => <div>{props.counter.toFixed()}</div>);
-  }
-);
+  useRender$(() => <button onClick={increment}>{counter.value}</button>);
 
-const instance1 = null as unknown as InstanceType<typeof Example1>;
-console.log(instance1.list?.[0]?.trim());
+  return { increment };
+});
+
+const instance = null as unknown as InstanceType<typeof Example>;
+console.log(instance.increment().toFixed());

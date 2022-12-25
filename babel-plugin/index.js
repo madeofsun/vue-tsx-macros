@@ -1,13 +1,15 @@
 const babel = require("@babel/core");
 
-const componentMacro = require("./component-macro");
 const { MACRO_IMPORT } = require("./constants");
+
+const componentMacro = require("./component-macro");
 const defaultPropsMacro = require("./default-props-macro");
+const useRenderMacro = require("./use-render");
 
 const t = babel.types;
 
 module.exports = function babelPluginFeMacros() {
-  const macros = [componentMacro, defaultPropsMacro];
+  const macros = [componentMacro, useRenderMacro, defaultPropsMacro];
   const macroImport = MACRO_IMPORT;
 
   return {

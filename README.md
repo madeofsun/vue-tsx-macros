@@ -4,6 +4,7 @@
 
 Set of marcos for convenient definitions of Vue JSX components.
 Enhances developer experience by removing duplication and improving type inference.
+Write type-safe components with less extra tooling (like `vue-tsc`/`Volar`).
 
 Includes
 
@@ -19,7 +20,10 @@ Includes
   - infers component `name` from function or variable name
   - infers component `props` similar to `defineProps()` and `withDefaults()` from `vue`
   - infers component `emits` similar to `defineEmits()` from `vue`
-  - adds special overload for `expose` from `setup` that allows to use it with correct type inference
+
+- `useRender$`
+
+  - allows to expose instance properties with correct type inference and at the same time use `render` function inside `setup`
 
 - `defaultProps$`
 
@@ -27,7 +31,7 @@ Includes
 
 ### How to use
 
-1. Install package to your project
+1. Install
 
 ```bash
 npm install vue-tsx-macros
@@ -51,7 +55,7 @@ export default {
 };
 ```
 
-If you are using `nuxt` use `extendViteConfig`
+If you are using `nuxt` with `vite` - use `extendViteConfig`.
 
 - Babel
 
@@ -63,18 +67,36 @@ Add plugin to your babel config alongside `@vue/babel-plugin-jsx`
 }
 ```
 
-3. Use in your code
+3. Use
 
 ```tsx
-import { component$ } from "vue-tsx-macros";
+import { ref } from "vue";
+import { component$, useRender$ } from "vue-tsx-macros";
 
 export type ExampleProps = {
   initialValue?: number;
 };
 
-export const Example = component$().define((props) => {
-  return () => <div />;
-});
+export type ExampleEmits = {
+  update: (value: number) => void;
+};
+
+export const Example = component$<ExampleProps, ExampleEmits>().define(
+  (props, { emit }) => {
+    const counter = ref(props.initialValue || 0);
+
+    const increment = (value = 1) => {
+      counter.value += value;
+      emit("update", counter.value);
+    };
+
+    useRender$(() => (
+      <button onClick={() => increment()}>{counter.value}</button>
+    ));
+
+    return { increment };
+  }
+);
 ```
 
 ### Transform examples
@@ -178,6 +200,38 @@ export const Example = {
 };
 ```
 
+- Expose properties
+
+```tsx
+export const Example = component$().define(() => {
+  const counter = ref(0);
+
+  const increment = () => (counter.value += 1);
+
+  useRender$(() => <button onClick={increment}>{counter.value}</button>);
+
+  return { increment };
+});
+```
+
+```jsx
+let _temp;
+export const Example = {
+  name: "Example",
+  setup: () => {
+    const counter = ref(0);
+    const increment = () => (counter.value += 1);
+    _temp = () => <button onClick={increment}>{counter.value}</button>;
+    return {
+      increment,
+    };
+  },
+  get render() {
+    return _temp;
+  },
+};
+```
+
 - Functional component
 
 ```tsx
@@ -202,7 +256,7 @@ export const Example = Object.assign(
 
 ## Limitations
 
-- Type parameter for `props` or `emits` must be a `TypeLiteral` or a `TypeReference` to `InterfaceDeclaration` or `TypeAliasDeclaration` with `TypeLiteral` in the same file (similar to `defineProps()` from `vue`). Note that only explicitly enumerated properties are included.
+- In `component$`, type parameters for `props` and `emits` must be a `TypeLiteral` or a `TypeReference` to `InterfaceDeclaration` or `TypeAliasDeclaration` with `TypeLiteral` in the same file (similar to `defineProps()` from `vue`). Note that only explicitly enumerated properties are included.
 
 ```ts
 // ok
@@ -229,33 +283,27 @@ export type ExampleProps = { size: number } & { extra: number }
 export const Example = component$<ExampleProps>().define(...)
 ```
 
-- Special overload for `expose` (the one with `render` function) must be used only as `return expose({}, () => ...)`
+- `useRender$` must be used only in `component$().define(` function.
 
 ```tsx
 // ok
-export const Example = component$().define((_, { expose }) => {
+export const Example = component$().define(() => {
   const counter = ref(0);
-  const increment = () => counter.value++;
-  return expose({ increment }, () => <div>{counter.value}</div>);
+  const increment = () => (counter.value += 1);
+
+  useRender$(() => <button onClick={increment}>{counter.value}</button>);
+
+  return { increment };
 });
 
-// render function is ignored
-export const Example = component$().define((_, context) => {
+// transformation is ignored
+export const Example = component$().define((props) => {
   const counter = ref(0);
-  const increment = () => counter.value++;
-  return context.expose({ increment }, () => <div>{counter.value}</div>);
-});
+  const increment = () => {
+    counter.value += 1;
 
-// ok
-export const Example = component$().define((_, context) => {
-  const counter = ref(0);
-  const increment = () => counter.value++;
-  const expose = context.expose;
-  return expose({ increment }, () => <div>{counter.value}</div>);
+    useRender$(() => <button onClick={increment}>{counter.value}</button>);
+  };
+  return { increment };
 });
-
-// render function is ignored
-export const Example = component$().define((_, context) =>
-  expose({}, () => <div>{counter.value}</div>)
-);
 ```

@@ -15,23 +15,17 @@ import { RuntimeUsageError } from "./utils/runtime-usage-error";
 
 type Exposed = Record<string, any>;
 
-interface CustomExpose {
-  (exposed?: Exposed): void;
-  /** In runtime returns RenderFunction */
-  <T extends Exposed>(exposed: T, render: RenderFunction): T;
-}
-
 type ComponentFactory<
   P = {},
   Defaults = {},
   E extends ObjectEmitsOptions = {}
 > = {
-  define: <RawBindings extends Exposed>(
+  define<RawBindings extends Exposed>(
     setup: (
       props: Readonly<PropsWithDefaults<P, Defaults>>,
-      context: Omit<SetupContext<E>, "expose"> & { expose: CustomExpose }
-    ) => RawBindings | RenderFunction
-  ) => DefineComponentSimple<P, E, RawBindings>;
+      context: Omit<SetupContext<E>, "expose">
+    ) => RenderFunction | RawBindings
+  ): DefineComponentSimple<P, E, RawBindings>;
 
   functional(
     render: (
@@ -65,5 +59,5 @@ export function component$<
 >(props: P, emits: E): ComponentFactory<ExtractPropTypes<P>, E>;
 
 export function component$(props?: unknown): never {
-  throw new RuntimeUsageError("component$");
+  throw new RuntimeUsageError({ macro: "component$" });
 }

@@ -63,7 +63,11 @@ export default Object.assign(function DefaultExample() {
 `;
 
 exports[`examples functional-defaults.tsx 1`] = `
-"// reference
+"const _defaultProps = {
+  color: "red",
+  array: () => []
+};
+// reference
 export interface ExampleProps {
   counter: number;
   color?: "red" | "blue";
@@ -99,10 +103,6 @@ export const Example = Object.assign(props => {
 <Example counter={0} color={"red"} />;
 
 // literal
-const _temp = {
-  color: "red",
-  array: () => []
-};
 export const Example1 = Object.assign(props => {
   return <div>
         {props.counter.toFixed()}
@@ -114,15 +114,15 @@ export const Example1 = Object.assign(props => {
   props: {
     "color": {
       type: null,
-      default: _temp["color"]
+      default: _defaultProps["color"]
     },
     "counter": {
       type: null,
-      default: _temp["counter"]
+      default: _defaultProps["counter"]
     },
     "array": {
       type: null,
-      default: _temp["array"]
+      default: _defaultProps["array"]
     }
   }
 });
@@ -238,7 +238,11 @@ export default {
 `;
 
 exports[`examples standard-defaults.tsx 1`] = `
-"// reference
+"const _defaultProps = {
+  color: "red",
+  array: () => []
+};
+// reference
 export interface ExampleProps {
   counter: number;
   color?: "red" | "blue";
@@ -275,24 +279,20 @@ export const Example = {
 <Example counter={0} color={"red"} />;
 
 // literal
-const _temp = {
-  color: "red",
-  array: () => []
-};
 export const Example1 = {
   name: "Example1",
   props: {
     "color": {
       type: null,
-      default: _temp["color"]
+      default: _defaultProps["color"]
     },
     "counter": {
       type: null,
-      default: _temp["counter"]
+      default: _defaultProps["counter"]
     },
     "array": {
       type: null,
-      default: _temp["array"]
+      default: _defaultProps["array"]
     }
   },
   setup: props => {
@@ -334,25 +334,22 @@ export const Example = {
 `;
 
 exports[`examples standard-expose.tsx 1`] = `
-"import { ref } from "vue";
-export interface ExampleProps {
-  counter: number;
-  array?: string[];
-}
-export const Example1 = {
-  name: "Example1",
-  props: ["counter", "array"],
-  setup: (props, {
-    expose
-  }) => {
-    const list = ref(props.array);
-    return expose({
-      list
-    }), Object.assign(() => <div>{props.counter.toFixed()}</div>, {
-      list
-    });
+"let _render;
+import { ref } from "vue";
+export const Example = {
+  name: "Example",
+  setup: () => {
+    const counter = ref(0);
+    const increment = () => counter.value += 1;
+    _render = () => <button onClick={increment}>{counter.value}</button>;
+    return {
+      increment
+    };
+  },
+  get render() {
+    return _render;
   }
 };
-const instance1 = ((null as unknown) as InstanceType<typeof Example1>);
-console.log(instance1.list?.[0]?.trim());"
+const instance = ((null as unknown) as InstanceType<typeof Example>);
+console.log(instance.increment().toFixed());"
 `;

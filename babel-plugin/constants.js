@@ -11,6 +11,9 @@ module.exports = {
   /** @type {'withDefaults'} */
   WITH_DEFAULTS: "withDefaults",
 
+  /** @type {'useRender$'} */
+  USE_RENDER_MACRO: "useRender$",
+
   /** @type {'defaultProps$'} */
   DEFAULT_PROPS_MACRO: "defaultProps$",
 };

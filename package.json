@@ -26,7 +26,7 @@
     "build": "tsc --noEmit false --outDir dist --declaration true",
     "prepack": "npm run build"
   },
-  "description": "Set of marcos for convenient definitions of Vue JSX components.",
+  "description": "Set of marcos for convenient definitions of Vue JSX components.\nEnhances developer experience by removing duplication and improving type inference.\nWrite type-safe components with less extra tooling (like `vue-tsc`/`Volar`).",
   "keywords": [
     "vue",
     "typescript",
