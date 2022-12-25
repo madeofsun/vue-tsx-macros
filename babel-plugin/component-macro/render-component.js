@@ -2,6 +2,7 @@ const babel = require("@babel/core");
 const { FUNCTIONAL_COMPONENT } = require("../constants");
 const filterNot = require("../utils/filterNot");
 const isNull = require("../utils/isNull");
+const renderEmits = require("./render-emits");
 const renderProps = require("./render-props");
 const transformExpose = require("./transform-expose");
 
@@ -10,6 +11,7 @@ const t = babel.types;
 /**
  * @typedef {{
  *  props: ReturnType<typeof import("./parse-props")>
+ *  emits: ReturnType<typeof import("./parse-emits")>
  *  defaultProps: ReturnType<typeof import("./parse-defaults")>
  *  component: ReturnType<typeof import("./parse-component")>
  *  variableName: ReturnType<typeof import("./parse-variable-name")>
@@ -27,6 +29,7 @@ module.exports = function renderComponent(path, options) {
   }
 
   const props = renderProps(path, options);
+  const emits = renderEmits(path, options);
 
   const { type: componentType, node: componentNode } = options.component;
 
@@ -70,6 +73,7 @@ module.exports = function renderComponent(path, options) {
         ? t.objectProperty(t.identifier("name"), t.stringLiteral(name))
         : null,
       props && t.objectProperty(t.identifier("props"), props),
+      emits && t.objectProperty(t.identifier("emits"), emits),
       componentNode
         ? t.objectProperty(t.identifier("setup"), componentNode)
         : null,

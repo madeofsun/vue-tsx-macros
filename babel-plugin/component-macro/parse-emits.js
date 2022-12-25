@@ -7,24 +7,24 @@ const t = babel.types;
  * @param {babel.NodePath<babel.types.CallExpression>} path
  * @returns {string[] | babel.types.Expression}
  */
-module.exports = function parseProps(path) {
-  const propsArg = path.node.arguments[0];
-  if (t.isExpression(propsArg)) {
-    return propsArg;
+module.exports = function parseEmits(path) {
+  const emitsArg = path.node.arguments[1];
+  if (t.isExpression(emitsArg)) {
+    return emitsArg;
   }
 
-  const propsType = path.node.typeParameters?.params[0];
+  const emitsType = path.node.typeParameters?.params[1];
 
-  if (!propsType) {
+  if (!emitsType) {
     return [];
   }
 
-  if (t.isTSTypeLiteral(propsType)) {
-    return collectTypeMemberKeys(propsType.members);
+  if (t.isTSTypeLiteral(emitsType)) {
+    return collectTypeMemberKeys(emitsType.members);
   }
 
-  if (t.isTSTypeReference(propsType) && t.isIdentifier(propsType.typeName)) {
-    const id = propsType.typeName.name;
+  if (t.isTSTypeReference(emitsType) && t.isIdentifier(emitsType.typeName)) {
+    const id = emitsType.typeName.name;
 
     const program = path.findParent((path) => path.isProgram());
 

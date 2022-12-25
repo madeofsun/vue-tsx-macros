@@ -1,2 +1,3 @@
-export * from "./component";
-export * from "./define-default-props";
+export { component$ } from "./component";
+export { useRender$ } from "./use-render";
+export { defaultProps$ } from "./default-props";

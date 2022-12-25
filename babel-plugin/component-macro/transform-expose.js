@@ -31,7 +31,13 @@ module.exports = function transformExpose(node) {
               t.callExpression(t.identifier("expose"), [
                 callExpression.arguments[0],
               ]),
-              secondArgument,
+              t.callExpression(
+                t.memberExpression(
+                  t.identifier("Object"),
+                  t.identifier("assign")
+                ),
+                [secondArgument, callExpression.arguments[0]]
+              ),
             ])
           );
         }

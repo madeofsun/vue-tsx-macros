@@ -1,5 +1,5 @@
 export class RuntimeUsageError extends Error {
-  constructor(macro: string) {
+  constructor({ macro }: { macro: string }) {
     super(`${macro}() macro is called in runtime.
     - Check usage
       - there are certain limitations - https://github.com/madeofsun/vue-tsx-macros#limitations

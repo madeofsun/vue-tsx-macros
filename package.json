@@ -4,10 +4,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
-  "peerDependencies": {
-    "@babel/core": "^7.0.0",
-    "vue": "^3.0.0"
-  },
   "devDependencies": {
     "@babel/core": "~7.20.2",
     "@babel/plugin-syntax-decorators": "~7.19.0",
@@ -21,12 +17,13 @@
   },
   "scripts": {
     "types:babel-plugin": "tsc --project ./babel-plugin/jsconfig.json",
-    "types:test-samples": "tsc --project ./babel-plugin/jsconfig.json",
+    "types:examples": "tsc --project ./examples/tsconfig.json",
+    "types:src": "tsc --project ./babel-plugin/jsconfig.json",
     "test:babel-plugin": "jest",
     "build": "tsc --noEmit false --outDir dist --declaration true",
     "prepack": "npm run build"
   },
-  "description": "Set of marcos for convenient definitions of Vue JSX components.",
+  "description": "Set of marcos for convenient definitions of Vue JSX components.\nEnhances developer experience by removing duplication and improving type inference.\nWrite type-safe components with less extra tooling (like `vue-tsc`/`Volar`).",
   "keywords": [
     "vue",
     "typescript",

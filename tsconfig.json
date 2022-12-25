@@ -5,9 +5,6 @@
     "jsx": "preserve",
     "target": "esnext",
     "baseUrl": "./src",
-    "paths": {
-      "vue-tsx-macros": ["./index.ts"]
-    },
     "moduleResolution": "node"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]

@@ -3,14 +3,13 @@ const babel = require("@babel/core");
 const plugin = require("./index.js");
 
 const code = `
-import { component$ } from "vue-tsx-macros";
+import { component$, useRender$ } from "vue-tsx-macros";
+import { ref } from "vue";
 
-export interface ExampleProps {
-  size?: 300 | 400 | 500 | 600;
-}
-
-export const Example = component$<ExampleProps>().functional((props) => {
-  return null
+export const Example = component$().define((props) => {
+  const counter = ref(0);
+  useRender$(() => <button onClick={increment}>{counter.value}</button>);
+  return { increment };
 });
 `;
 

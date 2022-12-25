@@ -28,13 +28,12 @@ module.exports = function renderProps(path, options) {
     if (t.isIdentifier(defaultProps)) {
       defaultsId = defaultProps;
     } else {
-      const statement = path.findParent((path) => path.isStatement());
-      defaultsId = path.scope.generateUidIdentifier();
-      statement?.insertBefore(
-        t.variableDeclaration("const", [
-          t.variableDeclarator(defaultsId, defaultProps),
-        ])
-      );
+      defaultsId = path.scope.generateUidIdentifier("defaultProps");
+      path.scope.push({
+        id: defaultsId,
+        kind: "const",
+        init: defaultProps,
+      });
     }
 
     return t.objectExpression(
