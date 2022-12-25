@@ -346,8 +346,8 @@ export const Example = {
       increment
     };
   },
-  get render() {
-    return _render;
+  render() {
+    return _render();
   }
 };
 const instance = ((null as unknown) as InstanceType<typeof Example>);
