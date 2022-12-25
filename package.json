@@ -4,10 +4,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
-  "peerDependencies": {
-    "@babel/core": "^7.0.0",
-    "vue": "^3.0.0"
-  },
   "devDependencies": {
     "@babel/core": "~7.20.2",
     "@babel/plugin-syntax-decorators": "~7.19.0",
@@ -21,7 +17,8 @@
   },
   "scripts": {
     "types:babel-plugin": "tsc --project ./babel-plugin/jsconfig.json",
-    "types:examples": "tsc --project ./babel-plugin/jsconfig.json",
+    "types:examples": "tsc --project ./examples/tsconfig.json",
+    "types:src": "tsc --project ./babel-plugin/jsconfig.json",
     "test:babel-plugin": "jest",
     "build": "tsc --noEmit false --outDir dist --declaration true",
     "prepack": "npm run build"
