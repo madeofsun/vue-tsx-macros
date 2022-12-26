@@ -4,6 +4,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
+  "files": [
+    "dist",
+    "babel-plugin",
+    "!__tests__",
+    "!jsconfig.json"
+  ],
   "devDependencies": {
     "@babel/core": "~7.20.2",
     "@babel/plugin-syntax-decorators": "~7.19.0",
