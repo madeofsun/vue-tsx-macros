@@ -1,9 +1,29 @@
 const babel = require("@babel/core");
 
-const { USE_RENDER_MACRO } = require("../constants");
+const buildMacroError = require("../helpers/build-macro-error");
+const {
+  USE_RENDER_MACRO,
+  COMPONENT_MACRO,
+  STANDARD_COMPONENT,
+} = require("../constants");
 const defineMacro = require("../define-macro");
 
 const t = babel.types;
+
+/**
+ * @param {babel.NodePath<babel.types.Node>} path
+ */
+function buildUsageContextError(path) {
+  return buildMacroError(
+    path,
+    `${USE_RENDER_MACRO}: must be a used inside "setup" function of "${COMPONENT_MACRO}" macro, i.e.
+const Comp = ${COMPONENT_MACRO}<Props>().${STANDARD_COMPONENT}((props) => {
+  ...
+  useRender$(() => <div>{props.message}</div>)
+  ...
+})`
+  );
+}
 
 const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
   const setupFunctionPath = path.scope.getFunctionParent()?.path;
@@ -12,16 +32,13 @@ const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
     (!setupFunctionPath.isArrowFunctionExpression() &&
       !setupFunctionPath.isFunctionExpression())
   ) {
-    return false;
+    return buildUsageContextError(path);
   }
 
   const componentPath = setupFunctionPath.parentPath;
 
-  if (!componentPath?.isObjectExpression()) {
-    return false;
-  }
-
   if (
+    !componentPath?.isObjectExpression() ||
     !componentPath.node.properties.some(
       (property) =>
         t.isObjectProperty(property) &&
@@ -30,13 +47,20 @@ const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
         property.key.name === "setup"
     )
   ) {
-    return false;
+    return buildUsageContextError(path);
   }
 
   const renderFunction = path.node.arguments[0];
-  if (!t.isExpression(renderFunction)) {
-    path.buildCodeFrameError("Missing argument for useRender$");
-    return false;
+  if (renderFunction === undefined) {
+    return buildMacroError(
+      path,
+      `${USE_RENDER_MACRO}: argument must be provided - ${USE_RENDER_MACRO}(() => <div></div>)`
+    );
+  } else if (!t.isExpression(renderFunction)) {
+    return buildMacroError(
+      path,
+      `${USE_RENDER_MACRO}: argument must be "Expression", not ${renderFunction.type} - ${USE_RENDER_MACRO}(() => <div></div>)`
+    );
   }
 
   const renderFunctionId = path.scope.generateUidIdentifier("render");
@@ -61,7 +85,7 @@ const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
     )
   );
 
-  return true;
+  return null;
 });
 
 module.exports = useRenderMacro;

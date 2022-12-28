@@ -1,13 +1,11 @@
 /**
  *
  * @param {string} name
- * @param {(path: import('@babel/core').NodePath<import('@babel/core').types.CallExpression>) => boolean} transform
- * @param {import('@babel/core').Visitor=} visitor
+ * @param {(path: import('@babel/core').NodePath<import('@babel/core').types.CallExpression>) => null | ReturnType<import('./helpers/build-macro-error')> } transform
  */
-module.exports = function defineMacro(name, transform, visitor) {
+module.exports = function defineMacro(name, transform) {
   return {
     name,
     transform,
-    visitor,
   };
 };

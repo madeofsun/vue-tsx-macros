@@ -5,8 +5,8 @@ const t = babel.types;
 /**
  * @param {babel.NodePath} path
  * @param {{
- *  props: ReturnType<typeof import("./parse-props")>
- *  defaultProps: ReturnType<typeof import("./parse-defaults")>
+ *  props: import("./render").RenderOptions['props']
+ *  defaultProps: import("./render").RenderOptions['defaultProps']
  * }} options
  * @returns {null | babel.types.Expression}
  */
@@ -17,11 +17,11 @@ module.exports = function renderProps(path, options) {
     return props;
   }
 
-  if (props.length === 0) {
+  if (props === null || props.length === 0) {
     return null;
   }
 
-  if (defaultProps) {
+  if (defaultProps !== null) {
     /** @type {babel.types.Identifier} */
     let defaultsId;
 

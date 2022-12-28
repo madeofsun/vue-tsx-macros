@@ -1,5 +1,6 @@
 const babel = require("@babel/core");
 
+const buildMacroError = require("./helpers/build-macro-error");
 const { MACRO_IMPORT } = require("./constants");
 
 const componentMacro = require("./component-macro");
@@ -20,11 +21,15 @@ module.exports = function babelPluginFeMacros() {
     visitor: {
       ImportDeclaration(path) {
         if (path.node.source.value === macroImport) {
-          /** @type {Map<string, number>} */
+          /**
+           * amount of transformed references for each macro
+           * @type {Map<string, number>}
+           */
           const macroCountMap = new Map();
 
           for (const specifier of path.node.specifiers) {
             if (!t.isImportSpecifier(specifier)) {
+              // macro must use named import
               continue;
             }
 
@@ -35,6 +40,7 @@ module.exports = function babelPluginFeMacros() {
             );
 
             if (!macro) {
+              // macro is not supported
               continue;
             }
 
@@ -43,17 +49,26 @@ module.exports = function babelPluginFeMacros() {
             )?.referencePaths;
 
             if (!referencePaths) {
+              // macro is imported, but not used
               continue;
             }
 
             for (const path of referencePaths) {
-              if (path.isIdentifier() && path.parentPath.isCallExpression()) {
-                macro?.transform(path.parentPath) &&
-                  macroCountMap.set(
-                    macro.name,
-                    1 + (macroCountMap.get(macro.name) || 0)
-                  );
+              if (!path.parentPath?.isCallExpression()) {
+                throw buildMacroError(
+                  path,
+                  `Macro "${macro.name}" must be used as "CallExpression" - ${macro.name}()`
+                );
               }
+
+              const error = macro.transform(path.parentPath);
+
+              if (error) {
+                throw error;
+              }
+
+              const current = macroCountMap.get(macro.name) || 0;
+              macroCountMap.set(macro.name, current + 1);
             }
           }
 

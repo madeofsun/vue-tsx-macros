@@ -16,4 +16,8 @@ module.exports = {
 
   /** @type {'defaultProps$'} */
   DEFAULT_PROPS_MACRO: "defaultProps$",
+
+  DOCS_LINK: "https://github.com/madeofsun/vue-tsx-macros",
+  DOCS_LINK_LIMITATIONS:
+    "https://github.com/madeofsun/vue-tsx-macros#limitations",
 };

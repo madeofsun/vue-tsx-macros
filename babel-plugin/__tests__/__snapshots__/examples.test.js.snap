@@ -149,7 +149,8 @@ export const Example = Object.assign((props, {
       </button>;
 }, {
   displayName: "Example",
-  props: ["color", "counter"]
+  props: ["color", "counter"],
+  emits: ["change", "update"]
 });
 <Example counter={0} onChange={value => value.toFixed()} />;"
 `;
@@ -195,11 +196,10 @@ export const Example1 = {
 export type Example2Props = {
   color?: "red" | "blue";
   counter: number;
-  array?: string[];
 };
 export const Example2 = {
   name: "Example2",
-  props: ["color", "counter", "array"],
+  props: ["color", "counter"],
   setup: props => {
     onMounted(() => {
       console.log("mounted");
