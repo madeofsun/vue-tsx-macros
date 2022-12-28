@@ -138,7 +138,7 @@ export const Example = component$<{ initialValue?: number }>()
 ```
 
 ```jsx
-const _temp = {
+const _defaultProps = {
   initialValue: 0,
 };
 export const Example = {
@@ -146,7 +146,7 @@ export const Example = {
   props: {
     initialValue: {
       type: null,
-      default: _temp["initialValue"],
+      default: _defaultProps["initialValue"],
     },
   },
   setup: (props) => {
@@ -215,19 +215,19 @@ export const Example = component$().define(() => {
 ```
 
 ```jsx
-let _temp;
+let _render;
 export const Example = {
   name: "Example",
   setup: () => {
     const counter = ref(0);
     const increment = () => (counter.value += 1);
-    _temp = () => <button onClick={increment}>{counter.value}</button>;
+    _render = () => <button onClick={increment}>{counter.value}</button>;
     return {
       increment,
     };
   },
-  get render() {
-    return _temp;
+  render() {
+    return _render();
   },
 };
 ```

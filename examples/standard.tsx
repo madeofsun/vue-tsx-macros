@@ -43,7 +43,6 @@ export const Example1 = component$<Example1Props>().define((props) => {
 export type Example2Props = {
   color?: "red" | "blue";
   counter: number;
-  array?: string[];
 };
 
 export const Example2 = component$<Example2Props>().define((props) => {

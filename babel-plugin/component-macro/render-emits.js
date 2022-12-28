@@ -5,7 +5,7 @@ const t = babel.types;
 /**
  * @param {babel.NodePath} path
  * @param {{
- *   emits: ReturnType<typeof import("./parse-props")>
+ *   emits: import("./render").RenderOptions['emits']
  * }} options
  * @returns {null | babel.types.Expression}
  */
@@ -16,7 +16,7 @@ module.exports = function renderEmits(path, options) {
     return emits;
   }
 
-  if (emits.length === 0) {
+  if (emits === null || emits.length === 0) {
     return null;
   }
 

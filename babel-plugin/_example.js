@@ -3,14 +3,8 @@ const babel = require("@babel/core");
 const plugin = require("./index.js");
 
 const code = `
-import { component$, useRender$ } from "vue-tsx-macros";
-import { ref } from "vue";
-
-export const Example = component$().define((props) => {
-  const counter = ref(0);
-  useRender$(() => <button onClick={increment}>{counter.value}</button>);
-  return { increment };
-});
+import { component$ } from "vue-tsx-macros";
+const Comp = component$().withDefaults().define(() => null);
 `;
 
 const res = babel.transformSync(code, {
