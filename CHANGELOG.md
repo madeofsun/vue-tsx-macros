@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/madeofsun/vue-tsx-macros/compare/v1.2.0...v1.2.1) (2022-12-28)
+
+
+### Bug Fixes
+
+* improve error messaging ([c09a616](https://github.com/madeofsun/vue-tsx-macros/commit/c09a616b76897400b311aec9239e4ca97c6fffb3))
+
 ## [1.2.0](https://github.com/madeofsun/vue-tsx-macros/compare/v1.1.0...v1.2.0) (2022-12-26)
 
 
