@@ -11,8 +11,6 @@ const t = babel.types;
 module.exports = function parseDefaults(defaultPropsCallPath) {
   const arg = defaultPropsCallPath.node.arguments[0];
 
-  console.log(defaultPropsCallPath.node);
-
   if (arg === undefined) {
     return buildMacroError(
       defaultPropsCallPath.parentPath,
