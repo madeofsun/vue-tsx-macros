@@ -12,6 +12,8 @@ Includes
 - `babel` plugin for code transformation
 
 [Usage examples](./examples)
+[Sandbox](https://stackblitz.com/edit/vitejs-vite-px3pko?file=README.md)
+[Example project](https://github.com/madeofsun/vite-vue-tsx)
 
 ### Features
 
@@ -73,30 +75,50 @@ Add plugin to your babel config alongside `@vue/babel-plugin-jsx`
 import { ref } from "vue";
 import { component$, useRender$ } from "vue-tsx-macros";
 
-export type ExampleProps = {
-  initialValue?: number;
+export const Example = component$().define((props, { emit }) => {
+  const counterRef = ref<InstanceType<typeof Counter>>();
+
+  onMounted(() => {
+    const id = setInterval(() => {
+      counterRef.value?.increment();
+    }, 5000);
+
+    onUnmounted(() => clearInterval(id));
+  });
+
+  return () => (
+    <div>
+      {"A counter"}
+      <Counter ref={counterRef} />
+    </div>
+  );
+});
+
+type CounterProps = {
+  initial?: number;
 };
 
-export type ExampleEmits = {
+type CounterEmits = {
   update: (value: number) => void;
 };
 
-export const Example = component$<ExampleProps, ExampleEmits>().define(
+const Counter = component$<ExampleProps, ExampleEmits>().define(
   (props, { emit }) => {
-    const counter = ref(props.initialValue || 0);
+    const count = ref(props.initial || 0);
 
     const increment = (value = 1) => {
-      counter.value += value;
+      count.value += value;
       emit("update", counter.value);
     };
 
     useRender$(() => (
-      <button onClick={() => increment()}>{counter.value}</button>
+      <button onClick={() => increment()}>{count.value}</button>
     ));
 
     return { increment };
   }
 );
+Counter.inheritAttrs = false;
 ```
 
 ### Transform examples
@@ -256,7 +278,7 @@ export const Example = Object.assign(
 
 ## Limitations
 
-- In `component$`, type parameters for `props` and `emits` must be a `TypeLiteral` or a `TypeReference` to `InterfaceDeclaration` or `TypeAliasDeclaration` with `TypeLiteral` in the same file (similar to `defineProps()` from `vue`). Note that only explicitly enumerated properties are included.
+- In `component$`, type parameters for `props` and `emits` must be `TypeLiteral` or `TypeReference` to `InterfaceDeclaration` or `TypeAliasDeclaration` with `TypeLiteral` in the same file (similar to `defineProps()` from `vue`). Note that only explicitly enumerated properties are included.
 
 ```ts
 // ok
@@ -274,11 +296,11 @@ export type ExampleProps = {
 }
 export const Example = component$<Props>().define(...)
 
-// props are ignored
+// compile-time error
 import { SomeProps } from './some-file'
 export const Example = component$<SomeProps>().define(...)
 
-// props are ignored
+// compile-time error
 export type ExampleProps = { size: number } & { extra: number }
 export const Example = component$<ExampleProps>().define(...)
 ```
@@ -296,7 +318,7 @@ export const Example = component$().define(() => {
   return { increment };
 });
 
-// transformation is ignored
+// compile-time error
 export const Example = component$().define((props) => {
   const counter = ref(0);
   const increment = () => {
