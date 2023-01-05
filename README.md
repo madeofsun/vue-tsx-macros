@@ -12,7 +12,9 @@ Includes
 - `babel` plugin for code transformation
 
 [Usage examples](./examples)
+
 [Sandbox](https://stackblitz.com/edit/vitejs-vite-px3pko?file=README.md)
+
 [Example project](https://github.com/madeofsun/vite-vue-tsx)
 
 ### Features
