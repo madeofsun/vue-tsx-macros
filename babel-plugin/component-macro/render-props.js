@@ -1,6 +1,4 @@
-const babel = require("@babel/core");
-
-const t = babel.types;
+const resolveBabel = require("../resolve-babel");
 
 /**
  * @param {babel.NodePath} path
@@ -11,6 +9,8 @@ const t = babel.types;
  * @returns {null | babel.types.Expression}
  */
 module.exports = function renderProps(path, options) {
+  const t = resolveBabel().types;
+
   const { props, defaultProps } = options;
 
   if (t.isExpression(props)) {

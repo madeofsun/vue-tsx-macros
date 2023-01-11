@@ -1,12 +1,10 @@
-const babel = require("@babel/core");
+const resolveBabel = require("../resolve-babel");
 
 const { FUNCTIONAL_COMPONENT } = require("../constants");
 const filterNot = require("../utils/filterNot");
 const isNull = require("../utils/isNull");
 const renderEmits = require("./render-emits");
 const renderProps = require("./render-props");
-
-const t = babel.types;
 
 /**
  * @typedef {{
@@ -27,6 +25,8 @@ const t = babel.types;
  * @returns {babel.types.Expression}
  */
 module.exports = function renderComponent(path, options) {
+  const t = resolveBabel().types;
+
   const props = renderProps(path, options);
   const emits = renderEmits(path, options);
 

@@ -1,4 +1,4 @@
-const babel = require("@babel/core");
+const resolveBabel = require("../resolve-babel");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const {
@@ -8,24 +8,9 @@ const {
 } = require("../constants");
 const defineMacro = require("../define-macro");
 
-const t = babel.types;
-
-/**
- * @param {babel.NodePath<babel.types.Node>} path
- */
-function buildUsageContextError(path) {
-  return buildMacroError(
-    path,
-    `${USE_RENDER_MACRO}: must be a used inside "setup" function of "${COMPONENT_MACRO}" macro, i.e.
-const Comp = ${COMPONENT_MACRO}<Props>().${STANDARD_COMPONENT}((props) => {
-  ...
-  useRender$(() => <div>{props.message}</div>)
-  ...
-})`
-  );
-}
-
 const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
+  const t = resolveBabel().types;
+
   const setupFunctionPath = path.scope.getFunctionParent()?.path;
   if (
     !setupFunctionPath ||
@@ -89,3 +74,18 @@ const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
 });
 
 module.exports = useRenderMacro;
+
+/**
+ * @param {babel.NodePath<babel.types.Node>} path
+ */
+function buildUsageContextError(path) {
+  return buildMacroError(
+    path,
+    `${USE_RENDER_MACRO}: must be a used inside "setup" function of "${COMPONENT_MACRO}" macro, i.e.
+const Comp = ${COMPONENT_MACRO}<Props>().${STANDARD_COMPONENT}((props) => {
+  ...
+  useRender$(() => <div>{props.message}</div>)
+  ...
+})`
+  );
+}

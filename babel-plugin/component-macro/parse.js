@@ -6,9 +6,9 @@ const parseComponent = require("./parse-component");
 
 /**
  *
- * @param {import('@babel/core').NodePath<import('@babel/core').types.CallExpression>} macroCallPath
+ * @param {babel.NodePath<babel.types.CallExpression>} macroCallPath
  * @returns {ReturnType<import('../helpers/build-macro-error')> | {
- *  path: import('@babel/core').NodePath<import('@babel/core').types.CallExpression>,
+ *  path: babel.NodePath<babel.types.CallExpression>,
  *  options: Parameters<import('./render')>[1]
  * }}
  */

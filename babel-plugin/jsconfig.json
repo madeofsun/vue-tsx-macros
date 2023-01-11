@@ -9,5 +9,5 @@
     "lib": ["es2020"],
     "types": ["@types/jest", "@types/node"]
   },
-  "include": ["**/*.js", "**/*.mjs", "src/index.ts"]
+  "include": ["**/*.js", "types.d.ts"]
 }

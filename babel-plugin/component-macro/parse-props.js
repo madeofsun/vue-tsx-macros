@@ -1,16 +1,16 @@
-const babel = require("@babel/core");
+const resolveBabel = require("../resolve-babel");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const { DOCS_LINK_LIMITATIONS, COMPONENT_MACRO } = require("../constants");
 const collectTypeMemberKeys = require("./get-member-keys");
-
-const t = babel.types;
 
 /**
  * @param {babel.NodePath<babel.types.CallExpression>} path
  * @returns {ReturnType<import('../helpers/build-macro-error')> | import('./render').RenderOptions['props']}
  */
 module.exports = function parseProps(path) {
+  const t = resolveBabel().types;
+
   const propsArg = path.node.arguments[0];
   if (t.isExpression(propsArg)) {
     return propsArg;

@@ -1,14 +1,14 @@
-const babel = require("@babel/core");
+const resolveBabel = require("../resolve-babel");
 const buildMacroError = require("../helpers/build-macro-error");
 const { WITH_DEFAULTS, COMPONENT_MACRO } = require("../constants");
-
-const t = babel.types;
 
 /**
  * @param {babel.NodePath<babel.types.CallExpression>} defaultPropsCallPath
  * @returns {ReturnType<import('../helpers/build-macro-error')> | import('./render').RenderOptions['defaultProps']}
  */
 module.exports = function parseDefaults(defaultPropsCallPath) {
+  const t = resolveBabel().types;
+
   const arg = defaultPropsCallPath.node.arguments[0];
 
   if (arg === undefined) {

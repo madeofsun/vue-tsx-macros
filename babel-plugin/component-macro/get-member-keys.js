@@ -1,9 +1,7 @@
-const babel = require("@babel/core");
+const resolveBabel = require("../resolve-babel");
 
 const { COMPONENT_MACRO, DOCS_LINK_LIMITATIONS } = require("../constants");
 const buildMacroError = require("../helpers/build-macro-error");
-
-const t = babel.types;
 
 /**
  * @param {babel.NodePath} path
@@ -11,6 +9,8 @@ const t = babel.types;
  * @returns {ReturnType<import('../helpers/build-macro-error')> | string[]}
  */
 module.exports = function getMemberKeys(path, typeElements) {
+  const t = resolveBabel().types;
+
   /** @type {string[]} */
   const acc = [];
 

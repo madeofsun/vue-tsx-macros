@@ -1,4 +1,4 @@
-const babel = require("@babel/core");
+const resolveBabel = require("../resolve-babel");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const {
@@ -8,8 +8,6 @@ const {
   COMPONENT_MACRO,
   DOCS_LINK,
 } = require("../constants");
-
-const t = babel.types;
 
 /**
  * @param {babel.NodePath<babel.types.CallExpression>} macroCallPath
@@ -25,6 +23,8 @@ const t = babel.types;
  * }}
  */
 module.exports = function parseComponent(macroCallPath) {
+  const t = resolveBabel().types;
+
   if (!macroCallPath.parentPath.isMemberExpression()) {
     return buildError(
       macroCallPath.parentPath,
