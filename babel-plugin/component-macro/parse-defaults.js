@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 const buildMacroError = require("../helpers/build-macro-error");
 const { WITH_DEFAULTS, COMPONENT_MACRO } = require("../constants");
 
@@ -7,7 +7,7 @@ const { WITH_DEFAULTS, COMPONENT_MACRO } = require("../constants");
  * @returns {ReturnType<import('../helpers/build-macro-error')> | import('./render').RenderOptions['defaultProps']}
  */
 module.exports = function parseDefaults(defaultPropsCallPath) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   const arg = defaultPropsCallPath.node.arguments[0];
 

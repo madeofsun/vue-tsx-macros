@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const { FUNCTIONAL_COMPONENT } = require("../constants");
 const filterNot = require("../utils/filterNot");
@@ -25,7 +25,7 @@ const renderProps = require("./render-props");
  * @returns {babel.types.Expression}
  */
 module.exports = function renderComponent(path, options) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   const props = renderProps(path, options);
   const emits = renderEmits(path, options);

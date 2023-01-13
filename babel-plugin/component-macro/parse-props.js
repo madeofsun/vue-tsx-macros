@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const { DOCS_LINK_LIMITATIONS, COMPONENT_MACRO } = require("../constants");
@@ -9,7 +9,7 @@ const collectTypeMemberKeys = require("./get-member-keys");
  * @returns {ReturnType<import('../helpers/build-macro-error')> | import('./render').RenderOptions['props']}
  */
 module.exports = function parseProps(path) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   const propsArg = path.node.arguments[0];
   if (t.isExpression(propsArg)) {

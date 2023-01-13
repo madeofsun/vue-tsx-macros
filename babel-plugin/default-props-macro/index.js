@@ -1,11 +1,11 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const { DEFAULT_PROPS_MACRO } = require("../constants");
 const defineMacro = require("../define-macro");
 
 const defaultPropsMacro = defineMacro(DEFAULT_PROPS_MACRO, (path) => {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   if (!path.parentPath.isCallExpression()) {
     return buildMacroError(

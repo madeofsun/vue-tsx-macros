@@ -71,6 +71,18 @@ Add plugin to your babel config alongside `@vue/babel-plugin-jsx`
 }
 ```
 
+Plugin options
+
+```ts
+{
+  /**
+   * If false, usage of emits argument in `component$` will throw compile-time error
+   * @default true
+   */
+  allowEmits: boolean;
+}
+```
+
 3. Use
 
 ```tsx
@@ -307,7 +319,7 @@ export type ExampleProps = { size: number } & { extra: number }
 export const Example = component$<ExampleProps>().define(...)
 ```
 
-- `useRender$` must be used only in `setup` function.
+- `useRender$` must be used only in `component$().define(` function.
 
 ```tsx
 // ok

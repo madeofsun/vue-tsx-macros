@@ -1,11 +1,11 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 /**
  * @param {babel.NodePath<babel.types.CallExpression>} componentCallPath
  * @returns {import('./render').RenderOptions['variableName']}
  */
 module.exports = function parseVariableName(componentCallPath) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   if (
     componentCallPath.parentPath.isVariableDeclarator() &&

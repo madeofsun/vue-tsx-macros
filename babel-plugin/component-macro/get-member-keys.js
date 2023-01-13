@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const { COMPONENT_MACRO, DOCS_LINK_LIMITATIONS } = require("../constants");
 const buildMacroError = require("../helpers/build-macro-error");
@@ -9,7 +9,7 @@ const buildMacroError = require("../helpers/build-macro-error");
  * @returns {ReturnType<import('../helpers/build-macro-error')> | string[]}
  */
 module.exports = function getMemberKeys(path, typeElements) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   /** @type {string[]} */
   const acc = [];

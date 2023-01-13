@@ -1,18 +1,19 @@
-const resolveBabel = require("./resolve-babel");
+const resolveContext = require("./resolve-context");
 const buildMacroError = require("./helpers/build-macro-error");
 const { MACRO_IMPORT } = require("./constants");
 
 const componentMacro = require("./component-macro");
 const defaultPropsMacro = require("./default-props-macro");
-const useRenderMacro = require("./use-render");
+const useRenderMacro = require("./use-render-macro");
 
 /**
  *
  * @param {babel} babel
+ * @param {unknown} options
  * @returns {{name: string, visitor: babel.Visitor}}
  */
-module.exports = function babelPluginFeMacros(babel) {
-  resolveBabel.set(babel);
+module.exports = function babelPluginFeMacros(babel, options) {
+  resolveContext.set(babel, options);
 
   const t = babel.types;
 

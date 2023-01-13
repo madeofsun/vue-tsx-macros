@@ -1,10 +1,10 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const transform = require("../helpers/transform-with-plugin");
+const transformWithPlugin = require("../helpers/transform-with-plugin");
 
 describe("examples", () => {
   test.each(loadSamples())("%s", (_, code) => {
-    expect(transform(code)).toMatchSnapshot();
+    expect(transformWithPlugin(code, {})).toMatchSnapshot();
   });
 });
 

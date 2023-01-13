@@ -3,22 +3,7 @@ const {
   USE_RENDER_MACRO,
   DEFAULT_PROPS_MACRO,
 } = require("../constants");
-const transformWithPlugin = require("../helpers/transform-with-plugin");
-
-/**
- * @param {string=} macro
- */
-function makeExpectThrows(macro) {
-  const macroPrefix = macro ? ` ${macro.replace("$", "\\$")}:` : "";
-  /**
-   * @param {string} code
-   * @param {string} keyword
-   */
-  return (code, keyword) =>
-    expect(() => transformWithPlugin(code)).toThrow(
-      new RegExp(`^unknown file:${macroPrefix}.*${keyword}.*`)
-    );
-}
+const makeExpectThrows = require("../helpers/make-expect-throws");
 
 describe("errors", () => {
   test("macro is not call expression", () => {

@@ -6,6 +6,6 @@ import { component$ } from "vue-tsx-macros";
 const Comp = component$().withDefaults().define(() => null);
 `;
 
-const res = transformWithPlugin(code);
+const res = transformWithPlugin(code, {});
 
 console.log(res);

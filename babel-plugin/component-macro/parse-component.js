@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const {
@@ -23,7 +23,7 @@ const {
  * }}
  */
 module.exports = function parseComponent(macroCallPath) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   if (!macroCallPath.parentPath.isMemberExpression()) {
     return buildError(

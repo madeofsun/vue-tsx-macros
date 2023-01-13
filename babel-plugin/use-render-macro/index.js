@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const {
@@ -9,7 +9,7 @@ const {
 const defineMacro = require("../define-macro");
 
 const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   const setupFunctionPath = path.scope.getFunctionParent()?.path;
   if (

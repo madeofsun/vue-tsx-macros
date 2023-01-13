@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 /**
  * @param {babel.NodePath} path
@@ -9,7 +9,7 @@ const resolveBabel = require("../resolve-babel");
  * @returns {null | babel.types.Expression}
  */
 module.exports = function renderProps(path, options) {
-  const t = resolveBabel().types;
+  const t = resolveContext().babel.types;
 
   const { props, defaultProps } = options;
 

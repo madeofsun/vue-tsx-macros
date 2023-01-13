@@ -1,4 +1,4 @@
-const resolveBabel = require("../resolve-babel");
+const resolveContext = require("../resolve-context");
 
 const buildMacroError = require("../helpers/build-macro-error");
 const { COMPONENT_MACRO, DOCS_LINK_LIMITATIONS } = require("../constants");
@@ -9,7 +9,21 @@ const collectTypeMemberKeys = require("./get-member-keys");
  * @returns {ReturnType<import('../helpers/build-macro-error')> | import('./render').RenderOptions['emits']}
  */
 module.exports = function parseEmits(macroCallPath) {
-  const t = resolveBabel().types;
+  const {
+    babel: { types: t },
+    options: { allowEmits },
+  } = resolveContext();
+
+  if (
+    !allowEmits &&
+    (macroCallPath.node.arguments[1] !== undefined ||
+      macroCallPath.node.typeParameters?.params[1] !== undefined)
+  ) {
+    return buildMacroError(
+      macroCallPath,
+      `${COMPONENT_MACRO}: emits are not allowed - "allowEmits" plugin option is set to "false"`
+    );
+  }
 
   const emitsArg = macroCallPath.node.arguments[1];
   if (t.isExpression(emitsArg)) {
