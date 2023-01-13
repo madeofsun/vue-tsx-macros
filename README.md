@@ -307,7 +307,7 @@ export type ExampleProps = { size: number } & { extra: number }
 export const Example = component$<ExampleProps>().define(...)
 ```
 
-- `useRender$` must be used only in `component$().define(` function.
+- `useRender$` must be used only in `setup` function.
 
 ```tsx
 // ok
