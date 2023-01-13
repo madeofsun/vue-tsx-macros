@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/madeofsun/vue-tsx-macros/compare/v1.2.5...v1.3.0) (2023-01-13)
+
+
+### Features
+
+* **babel-plugin:** add option to forbid emits ([c9e925c](https://github.com/madeofsun/vue-tsx-macros/commit/c9e925c030ef3a602331fa84ba2f41cf55b80eb1))
+
 ## [1.2.5](https://github.com/madeofsun/vue-tsx-macros/compare/v1.2.4...v1.2.5) (2023-01-11)
 
 
