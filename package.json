@@ -10,6 +10,9 @@
     "!__tests__",
     "!jsconfig.json"
   ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
   "devDependencies": {
     "@babel/core": "~7.20.2",
     "@babel/plugin-syntax-decorators": "~7.19.0",
