@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/madeofsun/vue-tsx-macros/compare/v1.3.0...v1.3.1) (2023-01-14)
+
+
+### Bug Fixes
+
+* add vue to peerDependencies ([feddce4](https://github.com/madeofsun/vue-tsx-macros/commit/feddce4c63ef34b7d3916a1f55b5aa9402d5e10e))
+
 ## [1.3.0](https://github.com/madeofsun/vue-tsx-macros/compare/v1.2.5...v1.3.0) (2023-01-13)
 
 
