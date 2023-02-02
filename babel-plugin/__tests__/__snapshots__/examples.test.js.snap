@@ -156,9 +156,9 @@ export const Example = Object.assign((props, {
 `;
 
 exports[`examples standard.tsx 1`] = `
-"import { onMounted } from "vue";
+"import { onMounted, defineComponent } from "vue";
 // literal
-export const Example = {
+export const Example = defineComponent({
   name: "Example",
   props: ["color", "counter"],
   setup: props => {
@@ -170,7 +170,7 @@ export const Example = {
       {props.color?.trim()}
     </div>;
   }
-};
+});
 <Example counter={0} color={"red"} />;
 
 // interface
@@ -178,7 +178,7 @@ export interface Example1Props {
   color?: "red" | "blue";
   counter: number;
 }
-export const Example1 = {
+export const Example1 = defineComponent({
   name: "Example1",
   props: ["color", "counter"],
   setup: props => {
@@ -190,14 +190,14 @@ export const Example1 = {
       {props.color?.trim()}
     </div>;
   }
-};
+});
 
 // type
 export type Example2Props = {
   color?: "red" | "blue";
   counter: number;
 };
-export const Example2 = {
+export const Example2 = defineComponent({
   name: "Example2",
   props: ["color", "counter"],
   setup: props => {
@@ -209,10 +209,10 @@ export const Example2 = {
       {props.color?.trim()}
     </div>;
   }
-};
+});
 
 // ComponentPropsOptions
-export const Example3 = {
+export const Example3 = defineComponent({
   name: "Example3",
   props: {
     color: String
@@ -223,10 +223,10 @@ export const Example3 = {
     });
     return () => <div>{props.color?.trim()}</div>;
   }
-};
+});
 
 // name from function
-export default {
+export default defineComponent({
   name: "DefaultExample",
   setup: function DefaultExample() {
     onMounted(() => {
@@ -234,7 +234,7 @@ export default {
     });
     return () => <div />;
   }
-};"
+});"
 `;
 
 exports[`examples standard-defaults.tsx 1`] = `
@@ -242,6 +242,7 @@ exports[`examples standard-defaults.tsx 1`] = `
   color: "red",
   array: () => []
 };
+import { defineComponent } from "vue";
 // reference
 export interface ExampleProps {
   counter: number;
@@ -252,7 +253,7 @@ export const exampleDefaults = {
   color: "red",
   array: () => []
 };
-export const Example = {
+export const Example = defineComponent({
   name: "Example",
   props: {
     "counter": {
@@ -275,11 +276,11 @@ export const Example = {
         {props.array.slice()}
       </div>;
   }
-};
+});
 <Example counter={0} color={"red"} />;
 
 // literal
-export const Example1 = {
+export const Example1 = defineComponent({
   name: "Example1",
   props: {
     "color": {
@@ -302,12 +303,13 @@ export const Example1 = {
         {props.array.slice()}
       </div>;
   }
-};
+});
 <Example1 counter={0} color={"red"} />;"
 `;
 
 exports[`examples standard-emits.tsx 1`] = `
-"export type ExampleProps = {
+"import { defineComponent } from "vue";
+export type ExampleProps = {
   color?: "red" | "blue";
   counter: number;
 };
@@ -315,7 +317,7 @@ export type ExampleEmits = {
   change: (value: number) => void;
   update: (value: string) => void;
 };
-export const Example = {
+export const Example = defineComponent({
   name: "Example",
   props: ["color", "counter"],
   emits: ["change", "update"],
@@ -329,14 +331,14 @@ export const Example = {
         {props.counter.toFixed()}
       </button>;
   }
-};
+});
 <Example counter={0} onChange={value => value.toFixed()} />;"
 `;
 
 exports[`examples standard-expose.tsx 1`] = `
 "let _render;
-import { ref } from "vue";
-export const Example = {
+import { ref, defineComponent } from "vue";
+export const Example = defineComponent({
   name: "Example",
   setup: () => {
     const counter = ref(0);
@@ -349,7 +351,7 @@ export const Example = {
   render() {
     return _render();
   }
-};
+});
 const instance = ((null as unknown) as InstanceType<typeof Example>);
 console.log(instance.increment().toFixed());"
 `;
