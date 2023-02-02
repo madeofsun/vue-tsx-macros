@@ -6,6 +6,17 @@ describe("imports", () => {
       expect(
         transformWithPlugin(
           `import { component$ } from "vue-tsx-macros";
+export const Component = component$().define(() => () => null);`,
+          {}
+        )
+      ).toBe(`import { defineComponent } from "vue";
+export const Component = defineComponent({
+  name: "Component",
+  setup: () => () => null
+});`);
+      expect(
+        transformWithPlugin(
+          `import { component$ } from "vue-tsx-macros";
 import { ref } from "vue";
 export const Component = component$().define(() => () => null);`,
           {}

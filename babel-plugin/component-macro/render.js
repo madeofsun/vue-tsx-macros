@@ -1,6 +1,6 @@
 const resolveContext = require("../resolve-context");
 
-const { FUNCTIONAL_COMPONENT } = require("../constants");
+const { FUNCTIONAL_COMPONENT, VUE_DEFINE_COMPONENT } = require("../constants");
 const filterNot = require("../utils/filterNot");
 const isNull = require("../utils/isNull");
 const renderEmits = require("./render-emits");
@@ -63,7 +63,7 @@ module.exports = function renderComponent(path, options) {
     );
   }
 
-  return t.callExpression(t.identifier("defineComponent"), [
+  return t.callExpression(t.identifier(VUE_DEFINE_COMPONENT), [
     t.objectExpression(
       filterNot(isNull, [
         name === null

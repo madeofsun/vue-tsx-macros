@@ -5,13 +5,13 @@ const { MACRO_IMPORT } = require("./constants");
 const componentMacro = require("./component-macro");
 const defaultPropsMacro = require("./default-props-macro");
 const useRenderMacro = require("./use-render-macro");
-const { statement } = require("@babel/template");
+const filter = require("./utils/filter");
 
 /**
  *
  * @param {babel} babel
  * @param {unknown} options
- * @returns {{name: string, visitor: babel.Visitor}}
+ * @returns {{name: string, visitor: babel.Visitor<{imports: Map<string, Map<string | null, { local: string, imported: string | null }>> }>}}
  */
 module.exports = function babelPluginFeMacros(babel, options) {
   resolveContext.set(babel, options);
@@ -21,16 +21,10 @@ module.exports = function babelPluginFeMacros(babel, options) {
   const macros = [componentMacro, useRenderMacro, defaultPropsMacro];
   const macroImport = MACRO_IMPORT;
 
-  /** @type {babel.types.ImportDeclaration[]} */
-  const declarations = [];
-  /** @type {Map<string, Map<string | null, { local: string, imported: string | null }>> } */
-  const imports = new Map();
-
   return {
     name: "babel-plugin-fe-macros",
     visitor: {
-      ImportDeclaration(path) {
-        declarations.push(path.node);
+      ImportDeclaration(path, { imports }) {
         if (path.node.source.value === macroImport) {
           /**
            * amount of transformed references for each macro
@@ -120,26 +114,28 @@ module.exports = function babelPluginFeMacros(babel, options) {
         }
       },
       Program: {
-        exit(path) {
+        enter(_, state) {
+          state.imports = new Map();
+        },
+        exit(path, { imports }) {
+          const declarations = filter(
+            t.isImportDeclaration,
+            path.get("body").map(({ node }) => node)
+          );
           for (const declaration of declarations) {
             const source = declaration.source.value;
             const extra = imports.get(source);
             if (extra) {
-              for (const specifier of extra.values()) {
-                if (
-                  declaration.specifiers.find((s) => {
-                    if (t.isImportDefaultSpecifier(s)) {
-                      return specifier.imported === undefined;
-                    } else if (
-                      t.isImportSpecifier(s) &&
-                      t.isIdentifier(s.imported)
-                    ) {
-                      return specifier.imported === s.imported.name;
-                    }
-                    return false;
-                  })
+              for (const specifier of declaration.specifiers) {
+                if (t.isImportDefaultSpecifier(specifier) && extra.has(null)) {
+                  extra.delete(null);
+                } else if (
+                  t.isImportSpecifier(specifier) &&
+                  t.isIdentifier(specifier.imported) &&
+                  t.isIdentifier(specifier.local) &&
+                  extra.has(specifier.imported.name)
                 ) {
-                  extra.delete(specifier.imported);
+                  extra.delete(specifier.imported.name);
                 }
               }
             }
