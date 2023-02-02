@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/madeofsun/vue-tsx-macros/compare/v1.3.1...v1.3.2) (2023-02-02)
+
+
+### Bug Fixes
+
+* hmr for vite-plugin-vue-jsx ([3ef1722](https://github.com/madeofsun/vue-tsx-macros/commit/3ef172291ca442e4f08a07d2cdee1d6c97b655e1)), closes [#21](https://github.com/madeofsun/vue-tsx-macros/issues/21)
+
 ## [1.3.1](https://github.com/madeofsun/vue-tsx-macros/compare/v1.3.0...v1.3.1) (2023-01-14)
 
 
