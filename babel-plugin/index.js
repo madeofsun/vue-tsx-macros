@@ -125,10 +125,9 @@ module.exports = function babelPluginFeMacros(babel, options) {
             const source = declaration.source.value;
             const extra = imports.get(source);
             if (extra) {
-              imports.delete(source);
               for (const specifier of extra.values()) {
                 if (
-                  !declaration.specifiers.find((s) => {
+                  declaration.specifiers.find((s) => {
                     if (t.isImportDefaultSpecifier(s)) {
                       return specifier.imported === undefined;
                     } else if (
@@ -140,37 +139,28 @@ module.exports = function babelPluginFeMacros(babel, options) {
                     return false;
                   })
                 ) {
-                  if (specifier.imported) {
-                    declaration.specifiers.push(
-                      t.importSpecifier(
-                        t.identifier(specifier.local),
-                        t.identifier(specifier.imported)
-                      )
-                    );
-                  } else {
-                    declaration.specifiers.push(
-                      t.importDefaultSpecifier(t.identifier(specifier.local))
-                    );
-                  }
+                  extra.delete(specifier.imported);
                 }
               }
             }
           }
           for (const [source, specifiers] of imports.entries()) {
-            path.get("body")[0]?.insertBefore(
-              t.importDeclaration(
-                [...specifiers.values()].map((s) => {
-                  if (s.imported) {
-                    return t.importSpecifier(
-                      t.identifier(s.local),
-                      t.identifier(s.imported)
-                    );
-                  }
-                  return t.importDefaultSpecifier(t.identifier(s.local));
-                }),
-                t.stringLiteral(source)
-              )
-            );
+            if (specifiers.size > 0) {
+              path.get("body")[0]?.insertBefore(
+                t.importDeclaration(
+                  [...specifiers.values()].map((s) => {
+                    if (s.imported) {
+                      return t.importSpecifier(
+                        t.identifier(s.local),
+                        t.identifier(s.imported)
+                      );
+                    }
+                    return t.importDefaultSpecifier(t.identifier(s.local));
+                  }),
+                  t.stringLiteral(source)
+                )
+              );
+            }
           }
         },
       },
