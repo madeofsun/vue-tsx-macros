@@ -2,8 +2,12 @@ const console = require("node:console");
 const transformWithPlugin = require("./helpers/transform-with-plugin.js");
 
 const code = `
-import { component$ } from "vue-tsx-macros";
-const Comp = component$().withDefaults().define(() => null);
+import { component$, useRender$ } from "vue-tsx-macros";
+import { ref } from "vue";
+const Comp = component$().withDefaults({}).define(() => {
+  useRender$(() => null)
+  return null
+});
 `;
 
 const res = transformWithPlugin(code, {});

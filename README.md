@@ -177,7 +177,7 @@ export const Example = component$<{ initialValue?: number }>()
 const _defaultProps = {
   initialValue: 0,
 };
-export const Example = {
+export const Example = defineComponent({
   name: "Example",
   props: {
     initialValue: {
@@ -190,7 +190,7 @@ export const Example = {
     const onClick = () => counter.value + 1;
     return () => <button onClick={onClick}>{counter.value}</button>;
   },
-};
+});
 ```
 
 - With emits
@@ -221,7 +221,7 @@ type Props = {
 type Emits = {
   update: (value: number) => void,
 };
-export const Example = {
+export const Example = defineComponent({
   name: "Example",
   props: ["initialValue"],
   emits: ["update"],
@@ -233,7 +233,7 @@ export const Example = {
     };
     return () => <button onClick={onClick}>{counter.value}</button>;
   },
-};
+});
 ```
 
 - Expose properties
@@ -252,7 +252,7 @@ export const Example = component$().define(() => {
 
 ```jsx
 let _render;
-export const Example = {
+export const Example = defineComponent({
   name: "Example",
   setup: () => {
     const counter = ref(0);
@@ -265,7 +265,7 @@ export const Example = {
   render() {
     return _render();
   },
-};
+});
 ```
 
 - Functional component

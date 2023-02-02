@@ -5,6 +5,7 @@ const { MACRO_IMPORT } = require("./constants");
 const componentMacro = require("./component-macro");
 const defaultPropsMacro = require("./default-props-macro");
 const useRenderMacro = require("./use-render-macro");
+const { statement } = require("@babel/template");
 
 /**
  *
@@ -20,10 +21,16 @@ module.exports = function babelPluginFeMacros(babel, options) {
   const macros = [componentMacro, useRenderMacro, defaultPropsMacro];
   const macroImport = MACRO_IMPORT;
 
+  /** @type {babel.types.ImportDeclaration[]} */
+  const declarations = [];
+  /** @type {Map<string, Map<string | null, { local: string, imported: string | null }>> } */
+  const imports = new Map();
+
   return {
     name: "babel-plugin-fe-macros",
     visitor: {
       ImportDeclaration(path) {
+        declarations.push(path.node);
         if (path.node.source.value === macroImport) {
           /**
            * amount of transformed references for each macro
@@ -65,10 +72,22 @@ module.exports = function babelPluginFeMacros(babel, options) {
                 );
               }
 
-              const error = macro.transform(path.parentPath);
+              const result = macro.transform(path.parentPath);
 
-              if (error) {
-                throw error;
+              if (result instanceof Error) {
+                throw result;
+              }
+              if (result?.imports) {
+                for (const { source, specifiers } of result.imports) {
+                  let value = imports.get(source);
+                  if (!value) {
+                    value = new Map();
+                  }
+                  for (const specifier of specifiers) {
+                    value.set(specifier.imported, specifier);
+                  }
+                  imports.set(source, value);
+                }
               }
 
               const current = macroCountMap.get(macro.name) || 0;
@@ -99,6 +118,61 @@ module.exports = function babelPluginFeMacros(babel, options) {
             path.remove();
           }
         }
+      },
+      Program: {
+        exit(path) {
+          for (const declaration of declarations) {
+            const source = declaration.source.value;
+            const extra = imports.get(source);
+            if (extra) {
+              imports.delete(source);
+              for (const specifier of extra.values()) {
+                if (
+                  !declaration.specifiers.find((s) => {
+                    if (t.isImportDefaultSpecifier(s)) {
+                      return specifier.imported === undefined;
+                    } else if (
+                      t.isImportSpecifier(s) &&
+                      t.isIdentifier(s.imported)
+                    ) {
+                      return specifier.imported === s.imported.name;
+                    }
+                    return false;
+                  })
+                ) {
+                  if (specifier.imported) {
+                    declaration.specifiers.push(
+                      t.importSpecifier(
+                        t.identifier(specifier.local),
+                        t.identifier(specifier.imported)
+                      )
+                    );
+                  } else {
+                    declaration.specifiers.push(
+                      t.importDefaultSpecifier(t.identifier(specifier.local))
+                    );
+                  }
+                }
+              }
+            }
+          }
+          for (const [source, specifiers] of imports.entries()) {
+            path.get("body")[0]?.insertBefore(
+              t.importDeclaration(
+                [...specifiers.values()].map((s) => {
+                  if (s.imported) {
+                    return t.importSpecifier(
+                      t.identifier(s.local),
+                      t.identifier(s.imported)
+                    );
+                  }
+                  return t.importDefaultSpecifier(t.identifier(s.local));
+                }),
+                t.stringLiteral(source)
+              )
+            );
+          }
+        },
       },
     },
   };

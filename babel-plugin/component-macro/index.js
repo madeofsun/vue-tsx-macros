@@ -14,6 +14,19 @@ const componentMacro = defineMacro(COMPONENT_MACRO, (path) => {
 
   parsed.path.replaceWith(component);
 
+  if (parsed.options.component.type === "define") {
+    return {
+      imports: [
+        {
+          source: "vue",
+          specifiers: [
+            { imported: "defineComponent", local: "defineComponent" },
+          ],
+        },
+      ],
+    };
+  }
+
   return null;
 });
 

@@ -63,13 +63,15 @@ module.exports = function renderComponent(path, options) {
     );
   }
 
-  return t.objectExpression(
-    filterNot(isNull, [
-      name === null
-        ? null
-        : t.objectProperty(t.identifier("name"), t.stringLiteral(name)),
-      ...commonProperties,
-      t.objectProperty(t.identifier("setup"), componentNode),
-    ])
-  );
+  return t.callExpression(t.identifier("defineComponent"), [
+    t.objectExpression(
+      filterNot(isNull, [
+        name === null
+          ? null
+          : t.objectProperty(t.identifier("name"), t.stringLiteral(name)),
+        ...commonProperties,
+        t.objectProperty(t.identifier("setup"), componentNode),
+      ])
+    ),
+  ]);
 };

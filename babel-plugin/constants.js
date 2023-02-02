@@ -1,4 +1,7 @@
 module.exports = {
+  /** @type {'defineComponent'} */
+  VUE_DEFINE_COMPONENT: "defineComponent",
+
   /** @type {'vue-tsx-macros'} */
   MACRO_IMPORT: "vue-tsx-macros",
 

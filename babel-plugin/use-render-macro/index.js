@@ -5,6 +5,7 @@ const {
   USE_RENDER_MACRO,
   COMPONENT_MACRO,
   STANDARD_COMPONENT,
+  VUE_DEFINE_COMPONENT,
 } = require("../constants");
 const defineMacro = require("../define-macro");
 
@@ -23,13 +24,20 @@ const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
   const componentPath = setupFunctionPath.parentPath;
 
   if (
-    !componentPath?.isObjectExpression() ||
-    !componentPath.node.properties.some(
-      (property) =>
-        t.isObjectProperty(property) &&
-        property.value === setupFunctionPath.node &&
-        t.isIdentifier(property.key) &&
-        property.key.name === "setup"
+    !componentPath?.isCallExpression() ||
+    !(
+      t.isIdentifier(componentPath.node.callee) &&
+      componentPath.node.callee.name === VUE_DEFINE_COMPONENT
+    ) ||
+    !(
+      t.isObjectExpression(componentPath.node.arguments[0]) &&
+      componentPath.node.arguments[0].properties.some(
+        (property) =>
+          t.isObjectProperty(property) &&
+          property.value === setupFunctionPath.node &&
+          t.isIdentifier(property.key) &&
+          property.key.name === "setup"
+      )
     )
   ) {
     return buildUsageContextError(path);
@@ -59,7 +67,7 @@ const useRenderMacro = defineMacro(USE_RENDER_MACRO, (path) => {
     t.assignmentExpression("=", renderFunctionId, renderFunction)
   );
 
-  componentPath.node.properties.push(
+  componentPath.node.arguments[0].properties.push(
     t.objectMethod(
       "method",
       t.identifier("render"),
