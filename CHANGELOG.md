@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/madeofsun/vue-tsx-macros/compare/v1.3.3...v1.3.4) (2023-02-02)
+
+
+### Bug Fixes
+
+* imports ([ca4e3d9](https://github.com/madeofsun/vue-tsx-macros/commit/ca4e3d98e738e9bd188b0dd359dbb86cb44c7b9a))
+
 ## [1.3.3](https://github.com/madeofsun/vue-tsx-macros/compare/v1.3.2...v1.3.3) (2023-02-02)
 
 
