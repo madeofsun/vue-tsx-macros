@@ -156,7 +156,8 @@ export const Example = Object.assign((props, {
 `;
 
 exports[`examples standard.tsx 1`] = `
-"import { onMounted, defineComponent } from "vue";
+"import { defineComponent } from "vue";
+import { onMounted } from "vue";
 // literal
 export const Example = defineComponent({
   name: "Example",
@@ -337,7 +338,8 @@ export const Example = defineComponent({
 
 exports[`examples standard-expose.tsx 1`] = `
 "let _render;
-import { ref, defineComponent } from "vue";
+import { defineComponent } from "vue";
+import { ref } from "vue";
 export const Example = defineComponent({
   name: "Example",
   setup: () => {
